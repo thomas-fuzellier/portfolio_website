@@ -1,0 +1,30 @@
+
+drwxr-xr-x <span class="light-green-color bold">Problem Solving/</span>
+-rw-r--r-- <span class="orange-color">Problem-solving</span>
+-rw-r--r-- <span class="orange-color">Critical thinking</span>
+-rw-r--r-- <span class="orange-color">Analytical thinking</span>
+-rw-r--r-- <span class="orange-color">Creativity in problem-solving</span>
+
+drwxr-xr-x <span class="light-green-color bold">Work Ethic/</span>
+-rw-r--r-- <span class="orange-color">Autonomy & self-direction</span>
+-rw-r--r-- <span class="orange-color">Initiative in group environments</span>
+-rw-r--r-- <span class="orange-color">Accountability & reliability</span>
+-rw-r--r-- <span class="orange-color">Resilience under pressure</span>
+
+drwxr-xr-x <span class="light-green-color bold">Team & Leadership/</span>
+-rw-r--r-- <span class="orange-color">Teamwork & collaboration</span>
+-rw-r--r-- <span class="orange-color">Leadership in team projects</span>
+-rw-r--r-- <span class="orange-color">Communication (technical & non-technical)</span>
+
+drwxr-xr-x <span class="light-green-color bold">Learning & Adaptability/</span>
+-rw-r--r-- <span class="orange-color">Fast learning ability</span>
+-rw-r--r-- <span class="orange-color">Curiosity & continuous learning mindset</span>
+-rw-r--r-- <span class="orange-color">Adaptability</span>
+
+drwxr-xr-x <span class="light-green-color bold">Organization/</span>
+-rw-r--r-- <span class="orange-color">Time management</span>
+-rw-r--r-- <span class="orange-color">Organization & prioritization</span>
+-rw-r--r-- <span class="orange-color">Attention to detail</span>
+
+drwxr-xr-x <span class="light-green-color bold">Decision Making/</span>
+-rw-r--r-- <span class="orange-color">Decision-making</span>

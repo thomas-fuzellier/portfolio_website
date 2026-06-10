@@ -1,0 +1,83 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #000000;
+    color: #919191;
+
+    font-family: "JetBrains Mono", Consolas, monospace;
+
+    overflow: hidden;
+}
+
+#boot-screen {
+    width: 90%;
+    max-width: 900px;
+}
+
+#boot-text {
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: normal;
+}
+
+#continue-message {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #C9D1D9;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+.green-color {
+    color: #28ff45;
+}
+
+.orange-color {
+    color: #ff970f;
+}
+
+/* touche ENTER */
+.enter-key {
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+#loading-bar {
+    margin-top: 6px;
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+
+.block {
+    color: #30363D;
+}
+
+.block.active {
+    color: #28ff45;
+}
+
+.hidden {
+    display: none;
+}
+
+.star-icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    margin-right: 6px;
+}

@@ -1,0 +1,16 @@
+
+<span class="white-color bold">Engineering Internship – Embedded Systems & Instrumentation</span>
+<span class="light-blue-color bold">Stratolia</span> <span class="light-blue-color">Palaiseau, France</span> June - August 2023
+
+Project focused on the design and development of embedded systems for Earth observation using a stratospheric balloon.
+
+-Development of a ground control system for an onboard camera
+-Mechanical design and prototyping of a stratospheric payload gondola
+-Embedded development on microcontrollers for sensor data acquisition
+-Electronic design and PCB development
+-Design and implementation of a test bench to simulate flight conditions
+<a href="assets/experiences/Rapport_de_Stage_FUZELLIER_Thomas_Deuxieme_Annee.pdf"
+   target="_blank"
+   class="report-link">
+[internship report]
+</a>

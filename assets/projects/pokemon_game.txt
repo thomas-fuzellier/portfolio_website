@@ -1,0 +1,10 @@
+
+<span class="white-color bold">Personal Project – Development of a 2D Game in Python</span>
+<span class="light-blue-color bold">HOME</span> 2025 - Present
+
+Pokemon-inspired 2D Game Development (Python / Pygame)
+
+-Designed and developed a custom 2D game engine in Python with state and interaction management
+-Implemented key gameplay systems, including player movement, collision detection, and turn-based battles
+-Architected a modular and scalable codebase to facilitate future feature expansion
+-Managed graphical assets and optimized real-time rendering performance

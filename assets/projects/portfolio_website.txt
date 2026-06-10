@@ -1,0 +1,13 @@
+
+<span class="white-color bold">Personal Project – Terminal-Inspired Interactive Portfolio Website</span>
+<span class="light-blue-color bold">HOME</span> 2026 - Present
+
+Development of a Linux-style interactive portfolio website simulating a real command-line environment (HTML / CSS / JavaScript) :
+
+-Designed and developed a fully interactive terminal-based UI replicating a Unix/Linux shell experience in the browser
+-Implemented a custom command system including navigation commands (ls, cd, open, pwd, clear) with a virtual filesystem
+-Built a dynamic routing system allowing file-based navigation through projects, education, and experience sections
+-Integrated asynchronous file loading using external text and PDF assets for scalable content management
+-Developed an autocomplete system (TAB completion) and command history to enhance user experience
+-Implemented syntax highlighting and colored terminal output to mimic real shell environments (Ubuntu-style UI)
+-Designed a modular architecture separating UI rendering, command logic, and filesystem structure for maintainability

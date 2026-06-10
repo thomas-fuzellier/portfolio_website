@@ -1,0 +1,12 @@
+
+<span class="white-color bold">Embedded Systems Engineer</span>
+<span class="light-blue-color bold">Semi Lift</span> <span class="light-blue-color">Toulon, France</span> January 2025 - January 2026 
+
+First engineering position within a SME specialized in elevator systems. Contributed to the companys transition toward in-house development of electronic boards and embedded software.
+
+-Maintenance and enhancement of embedded C/C++ software on microcontrollers
+-Development and adaptation of simple drivers to interface sensors and actuators
+-Integration and validation of sensors within elevator systems
+-Development of Python tools to automate testing and analyze operational data
+-Technical support for fault diagnosis and troubleshooting
+-Management and maintenance of the company website

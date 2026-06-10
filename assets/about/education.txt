@@ -1,0 +1,9 @@
+
+<span class="white-color bold">Engineering Degree</span>                 <span class="bold">ENSEA</span>, <span class="light-blue-color bold">Cergy 95000</span>
+September 2020 - December 2024          General Engineering Degree, Computer Science and Systems specialization
+                                <span class="orange-arrow bold">↑</span> 
+<span class="white-color bold">ATS Preparatory Class</span>         <span class="bold">Lycée des Rempart</span>, <span class="light-blue-color bold">Marseille 13007</span>
+September 2019 - June 2020          Mathematics and Physics
+                                <span class="orange-arrow bold">↑</span> 
+<span class="white-color bold">DUT GEII</span>                          <span class="bold">Université d'Aix Marseille</span>, <span class="light-blue-color bold">Marseille 13013</span>
+September 2017 - June 2019          DUT Génie Electrique et Informatique Industrielle

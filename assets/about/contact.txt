@@ -1,0 +1,7 @@
+
+<span class="white-color bold">Contact</span>
+
+<span class="orange-color">$ ping</span>        📧 thomas.fuzellier@outlook.fr
+<span class="orange-color">$ call</span>        📞 +33 6 10 48 41 37
+<span class="orange-color">$ open</span>        💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier/</a>
+<span class="orange-color">$ git</span>         💻 <a href="https://www.github.com/krustybe/" target="_blank" class="link">github.com/krustybe/</a>

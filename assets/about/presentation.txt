@@ -1,0 +1,28 @@
+
+<span class="white-color bold">Presentation</span>
+Thomas Fuzellier, engineering graduate from ENSEA, specializing in Computer Science and Systems, class of 2024.
+
+🧠 How do I define myself?
+As a curious and creative engineer who has always enjoyed understanding how things work and finding concrete solutions to technical challenges.
+
+💡 Who I am:
+I have always been drawn to science, with a strong preference for computer science. From an early age, I enjoyed creating small programs, understanding how machines work, and learning the languages that power them.
+This pleasure of coding, learning by doing, and solving real-world problems has never left me. Even today, I find the same satisfaction in developing tools, exploring new algorithms, or building intelligent and useful systems.
+
+🔧 What I do:
+I apply my skills to ambitious technical projects:
+
+-Data analysis and NLP with LLMs
+-Embedded systems and electronics
+-Software programming in Python, C++, Java
+-Mechanical prototyping and CAD
+
+With a particular focus on quality, autonomy… and a good dose of curiosity.
+
+🔍 What I believe:
+
+-“Understand before coding, always.”
+-“A good tool is one you enjoy reusing.”
+-“Innovation comes from those who ask the right questions.”
+-“A well-defined problem is a problem half solved.”
+-“Continuous learning means never doing the same project twice.”

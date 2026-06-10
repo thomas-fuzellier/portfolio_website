@@ -1,0 +1,16 @@
+
+<span class="white-color bold">Data Engineering / LLM Internship applied to Healthcare</span>
+<span class="light-blue-color bold">MEDAL Laboratory</span> <span class="light-blue-color">University of Madrid, Spain</span> May - December 2024 Laboratoire
+
+Project for automated analysis of clinical data using language models (LLM), aimed at structuring medical information from free text for analytical use:
+
+-Design and development of an end-to-end NLP pipeline for clinical data analysis using LLMs
+-Extraction, normalization, and structuring of unstructured medical data
+-Orchestration of LLM calls via REST API
+-Benchmarking and evaluation of models on medical data
+-Industrialization of the pipeline: modularization, unit testing, technical documentation
+<a href="assets/experiences/Rapport_de_Stage_FUZELLIER_Thomas_Derniere_Annee.pdf"
+   target="_blank"
+   class="report-link">
+[internship report]
+</a>

@@ -1,0 +1,50 @@
+
+drwxr-xr-x <span class="light-green-color bold">Programming & Software Development/</span>
+-rw-r--r-- <span class="orange-color">Python</span>
+-rw-r--r-- <span class="orange-color">C / C++</span>
+-rw-r--r-- <span class="orange-color">Java</span>
+-rw-r--r-- <span class="orange-color">JavaScript</span>
+-rw-r--r-- <span class="orange-color">HTML / CSS</span>
+-rw-r--r-- <span class="orange-color">SQL</span>
+
+drwxr-xr-x <span class="light-green-color bold">Artificial Intelligence & Machine Learning/</span>
+-rw-r--r-- <span class="orange-color">Natural Language Processing (NLP)</span>
+-rw-r--r-- <span class="orange-color">Transformers architecture</span>
+-rw-r--r-- <span class="orange-color">Large Language Models (LLMs: GPT, LLaMA)</span>
+-rw-r--r-- <span class="orange-color">Prompt Engineering</span>
+-rw-r--r-- <span class="orange-color">PyTorch</span>
+-rw-r--r-- <span class="orange-color">Hugging Face</span>
+-rw-r--r-- <span class="orange-color">Pandas</span>
+-rw-r--r-- <span class="orange-color">NumPy</span>
+
+drwxr-xr-x <span class="light-green-color bold">Backend & APIs/</span>
+-rw-r--r-- <span class="orange-color">REST APIs</span>
+-rw-r--r-- <span class="orange-color">HTTP protocols</span>
+-rw-r--r-- <span class="orange-color">Authentication & Token Management</span>
+-rw-r--r-- <span class="orange-color">Rate Limiting</span>
+-rw-r--r-- <span class="orange-color">Backend system design</span>
+
+drwxr-xr-x <span class="light-green-color bold">Embedded Systems/</span>
+-rw-r--r-- <span class="orange-color">STM32 microcontrollers</span>
+-rw-r--r-- <span class="orange-color">Arduino</span>
+-rw-r--r-- <span class="orange-color">Embedded C/C++ programming</span>
+-rw-r--r-- <span class="orange-color">Real-time systems</span>
+
+drwxr-xr-x <span class="light-green-color bold">Tools & DevOps/</span>
+-rw-r--r-- <span class="orange-color">Git</span>
+-rw-r--r-- <span class="orange-color">Docker</span>
+-rw-r--r-- <span class="orange-color">Linux</span>
+-rw-r--r-- <span class="orange-color">VS Code</span>
+-rw-r--r-- <span class="orange-color">MATLAB</span>
+-rw-r--r-- <span class="orange-color">Excel VBA</span>
+-rw-r--r-- <span class="orange-color">Fusion 360</span>
+
+drwxr-xr-x <span class="light-green-color bold">Design/</span>
+-rw-r--r-- <span class="orange-color">Adobe Illustrator</span>
+-rw-r--r-- <span class="orange-color">Adobe Photoshop</span>
+-rw-r--r-- <span class="orange-color">Basic UI / visual design</span>
+
+drwxr-xr-x <span class="light-green-color bold">Languages/</span>
+-rw-r--r-- <span class="orange-color">French — Native</span>
+-rw-r--r-- <span class="orange-color">English — C1 (TOEIC: 810)</span>
+-rw-r--r-- <span class="orange-color">Spanish — A2</span>

@@ -1,0 +1,10 @@
+
+<span class="white-color bold">Academic Project – Embedded System for Automated Rubik s Cube Solving</span>
+<span class="light-blue-color bold">ENSEA</span> <span class="light-blue-color">Cergy, France</span> 2023
+
+Design and development of an embedded system capable of automatically solving a Rubik’s Cube, combining algorithms, electronics, and motor control:
+
+-Implemented a Rubik s Cube solving algorithm in C
+-Programmed a microcontroller to control stepper motors and execute solving sequences
+-Designed a custom PCB integrating motor drivers and a Bluetooth communication module
+-Developed wireless smartphone connectivity for remote monitoring and control of the system
