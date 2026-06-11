@@ -81,3 +81,20 @@ body {
     vertical-align: middle;
     margin-right: 6px;
 }
+
+@media (max-width: 768px) {
+
+    #boot-screen {
+        width: 95%;
+    }
+
+    #boot-text {
+        font-size: 12px;
+    }
+
+    #continue-message {
+        text-align: center;
+        font-size: 12px;
+    }
+
+}

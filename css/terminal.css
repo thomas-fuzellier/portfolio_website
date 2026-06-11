@@ -194,3 +194,41 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+
+@media (max-width: 768px) {
+
+    #output {
+        width: 95%;
+        font-size: 13px;
+        padding: 10px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+
+    #input-line {
+        width: 95%;
+        padding: 10px;
+    }
+
+    #input {
+        font-size: 16px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .sub-title {
+        font-size: 12px;
+    }
+
+    .sub-title p {
+        margin-bottom: 0;
+    }
+
+    .prompt {
+        font-size: 12px;
+        margin-right: 6px;
+    }
+
+}
