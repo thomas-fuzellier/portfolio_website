@@ -8,3 +8,8 @@ Design and development of an embedded system capable of automatically solving a 
 -Programmed a microcontroller to control stepper motors and execute solving sequences
 -Designed a custom PCB integrating motor drivers and a Bluetooth communication module
 -Developed wireless smartphone connectivity for remote monitoring and control of the system
+<a href="https://github.com/thomas-fuzellier/Rubiks-Cube_Project"
+   target="_blank"
+   class="report-link">
+[github project]
+</a>
