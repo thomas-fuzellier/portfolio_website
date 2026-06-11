@@ -212,13 +212,13 @@ body {
         left: 50%;
         transform: translateX(-50%);
 
-        height: calc(100vh - 120px);
+        height: calc(100vh - 240px);
 
         overflow-y: auto;
         white-space: pre-wrap;
         align-items: center;
         padding: 10px 15px;
-        margin-bottom: 300px;
+        margin-bottom: 20px;
     }
 
     #input-line {
