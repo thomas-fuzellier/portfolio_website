@@ -125,7 +125,7 @@ function showLoadingBar(callback) {
 function showContinue() {
 
     continueMessage.innerHTML =
-        "Press <span class='enter-key'>Enter</span> to continue...";
+        "Press <span class='enter-key'>Enter</span> or <span class='enter-key'>left click</span> to continue...";
 
     continueMessage.classList.remove("hidden");
 }
@@ -143,8 +143,10 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-continueMessage.addEventListener("click", () => {
+
+document.addEventListener("click", (e) => {
+
     if (!continueMessage.classList.contains("hidden")) {
-        goToTerminal();
+        window.location.href = "terminal.html";
     }
 });
