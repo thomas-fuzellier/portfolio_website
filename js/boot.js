@@ -142,3 +142,9 @@ document.addEventListener("keydown", (e) => {
         window.location.href = "terminal.html";
     }
 });
+
+continueMessage.addEventListener("click", () => {
+    if (!continueMessage.classList.contains("hidden")) {
+        goToTerminal();
+    }
+});
