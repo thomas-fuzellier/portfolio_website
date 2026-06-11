@@ -5,3 +5,4 @@
 <span class="orange-color">$ call</span>        📞 +33 6 10 48 41 37
 <span class="orange-color">$ open</span>        💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier/</a>
 <span class="orange-color">$ git</span>         💻 <a href="https://github.com/thomas-fuzellier" target="_blank" class="link">github.com/thomas-fuzellier/</a>
+<span class="orange-color">$ sit</span>         🌐 <a href="https://fuzellier-portfolio-website.vercel.app/" target="_blank" class="link">fuzellier-portfolio-website.vercel.app/</a>
