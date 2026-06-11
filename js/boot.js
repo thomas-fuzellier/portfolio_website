@@ -20,12 +20,10 @@ const lines = [
 
     "Don't search for /secrets here...",
 
-    // Texte orange (HTML directement dans la chaîne)
     "<span class='orange-color'>You're here totally for the love of the game.</span>",
 
     "",
 
-    // Dernière ligne avec une image + texte vert
     "<img src='assets/etoile.png' class='star-icon'><span class='green-color'>thomas.fuzellier portfolio system v1.0</span> - ready."
 ];
 

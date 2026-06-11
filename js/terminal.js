@@ -184,7 +184,6 @@ function openFile(name) {
         return;
     }
 
-    /* PDF */
     if (name.endsWith(".pdf")) {
         window.open(content, "_blank");
         return;
@@ -210,49 +209,31 @@ function autocomplete(value) {
 
     let options = [];
 
-    /* -----------------------
-       ROOT COMMANDS
-    ------------------------ */
     if (parts.length === 1) {
         options = ["ls", "cd", "pwd", "clear", "help", "cat"];
     }
 
-    /* -----------------------
-       CD → folders ONLY
-    ------------------------ */
     else if (command === "cd") {
         options = getCurrentFolders();
     }
 
-    /* -----------------------
-       OPEN → ALWAYS files + folders (GLOBAL FIX)
-    ------------------------ */
     else if (command === "cat") {
 
         options = getCurrentFolders();
     }
 
-    /* -----------------------
-       SAFE MATCH
-    ------------------------ */
     const normalizedLast = last.toLowerCase();
 
     let matches = options.filter(opt =>
         opt.toLowerCase().startsWith(normalizedLast)
     );
 
-    /* -----------------------
-       FALLBACK FUZZY
-    ------------------------ */
     if (matches.length === 0) {
         matches = options.filter(opt =>
             fuzzyMatch(last, opt)
         );
     }
 
-    /* -----------------------
-       APPLY RESULT
-    ------------------------ */
     if (matches.length === 1) {
         parts[parts.length - 1] = matches[0];
         return parts.join(" ");
@@ -323,7 +304,6 @@ async function openFile(name) {
         return;
     }
 
-    /* TXT FILE → FETCH */
     try {
         const response = await fetch(path);
         const text = await response.text();
