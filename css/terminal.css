@@ -198,11 +198,27 @@ body {
 @media (max-width: 768px) {
 
     #output {
-        width: 95%;
-        font-size: 13px;
-        padding: 10px;
         overflow-wrap: break-word;
         word-break: break-word;
+
+        width: 80%;
+        max-width: 900px;
+
+        font-size: 14px;
+        line-height: 1.6;
+    
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        height: calc(100vh - 120px);
+
+        overflow-y: auto;
+        white-space: pre-wrap;
+        align-items: center;
+        padding: 10px 15px;
+        margin-bottom: 20px;
     }
 
     #input-line {
