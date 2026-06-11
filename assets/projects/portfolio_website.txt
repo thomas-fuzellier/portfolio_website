@@ -11,3 +11,8 @@ Development of a Linux-style interactive portfolio website simulating a real com
 -Developed an autocomplete system (TAB completion) and command history to enhance user experience
 -Implemented syntax highlighting and colored terminal output to mimic real shell environments (Ubuntu-style UI)
 -Designed a modular architecture separating UI rendering, command logic, and filesystem structure for maintainability
+<a href="https://github.com/thomas-fuzellier/portfolio_website"
+   target="_blank"
+   class="report-link">
+[github project]
+</a>
