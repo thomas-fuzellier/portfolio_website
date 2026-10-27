@@ -1,0 +1,70 @@
+{
+  "about": {
+    "type": "dir",
+    "children": {
+      "contact.txt": {
+        "type": "file",
+        "path": "assets/about/contact.txt"
+      },
+      "CV_FUZELLIER_Thomas.pdf": {
+        "type": "file",
+        "path": "assets/about/CV_FUZELLIER_Thomas.pdf"
+      },
+      "education.txt": {
+        "type": "file",
+        "path": "assets/about/education.txt"
+      },
+      "presentation.txt": {
+        "type": "file",
+        "path": "assets/about/presentation.txt"
+      }
+    }
+  },
+  "experiences": {
+    "type": "dir",
+    "children": {
+      "end-of-studies_engineering_internship.txt": {
+        "type": "file",
+        "path": "assets/experiences/end-of-studies_engineering_internship.txt"
+      },
+      "first_job.txt": {
+        "type": "file",
+        "path": "assets/experiences/first_job.txt"
+      },
+      "second_year_internship.txt": {
+        "type": "file",
+        "path": "assets/experiences/second_year_internship.txt"
+      }
+    }
+  },
+  "projects": {
+    "type": "dir",
+    "children": {
+      "pokemon_game.txt": {
+        "type": "file",
+        "path": "assets/projects/pokemon_game.txt"
+      },
+      "portfolio_website.txt": {
+        "type": "file",
+        "path": "assets/projects/portfolio_website.txt"
+      },
+      "rubiks-cube_solver.txt": {
+        "type": "file",
+        "path": "assets/projects/rubiks-cube_solver.txt"
+      }
+    }
+  },
+  "skills": {
+    "type": "dir",
+    "children": {
+      "hard_skills.txt": {
+        "type": "file",
+        "path": "assets/skills/hard_skills.txt"
+      },
+      "soft_skills.txt": {
+        "type": "file",
+        "path": "assets/skills/soft_skills.txt"
+      }
+    }
+  }
+}

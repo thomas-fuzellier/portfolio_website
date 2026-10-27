@@ -1,0 +1,10 @@
+{
+  "name": "portfolio-terminal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Terminal-style portfolio website",
+  "scripts": {
+    "build": "node scripts/build-manifest.js",
+    "dev": "node scripts/build-manifest.js && npx --yes serve ."
+  }
+}

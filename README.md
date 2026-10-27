@@ -25,6 +25,8 @@ This project presents a personal portfolio as a command-line interface. Users na
 - `js/boot.js` — boot animation and navigation logic
 - `js/terminal.js` — terminal command handling and file system logic
 - `assets/` — content files for about, experiences, projects, and skills
+- `assets/manifest.json` — auto-generated index of `assets/` (do not edit by hand)
+- `scripts/build-manifest.js` — generates `assets/manifest.json` from the `assets/` folder
 
 ## Usage
 
@@ -47,11 +49,25 @@ This project presents a personal portfolio as a command-line interface. Users na
 - `pwd` — print current directory
 - `clear` — clear terminal output and show help again
 
-## Customization
+## Adding content
 
-Update the `filesystem` and `fileContent` objects in `js/terminal.js` to add or modify files and folders.
+The terminal's file system mirrors the `assets/` folder: each sub-folder becomes a directory and each `.txt` / `.pdf` file becomes a file you can `cat`.
+
+1. Drop a new file in the right folder, e.g. `assets/projects/my_new_project.txt` (or create a new folder like `assets/certifications/`).
+2. Regenerate the index:
+   ```bash
+   node scripts/build-manifest.js
+   ```
+3. Commit and push. On Vercel the index is also regenerated automatically at each deployment (`vercel.json`).
+
+Rules:
+- Only `.txt` and `.pdf` files are shown (images and other files are ignored).
+- Files and folders starting with `_` are hidden from `ls` but stay reachable by URL — useful for attachments linked from a `.txt` (e.g. `assets/experiences/_reports/`).
+- `.txt` files can contain HTML (`<span class="...">`, `<a href="...">`) for colors and links.
+
+To preview locally, run `npm run dev` (regenerates the index and starts a local server), since `fetch` does not work when opening the HTML file directly from disk.
 
 ## Notes
 
-- The portfolio is built with plain web technologies and works locally without a backend.
+- The portfolio is built with plain web technologies and needs no backend; a static file server is enough.
 - Use a modern browser for the best experience.
