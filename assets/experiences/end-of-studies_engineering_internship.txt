@@ -9,7 +9,7 @@ Project for automated analysis of clinical data using language models (LLM), aim
 -Orchestration of LLM calls via REST API
 -Benchmarking and evaluation of models on medical data
 -Industrialization of the pipeline: modularization, unit testing, technical documentation
-<a href="assets/experiences/Rapport_de_Stage_FUZELLIER_Thomas_Derniere_Annee.pdf"
+<a href="assets/experiences/_reports/Rapport_de_Stage_FUZELLIER_Thomas_Derniere_Annee.pdf"
    target="_blank"
    class="report-link">
 [internship report]

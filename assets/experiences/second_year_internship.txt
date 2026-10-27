@@ -9,7 +9,7 @@ Project focused on the design and development of embedded systems for Earth obse
 -Embedded development on microcontrollers for sensor data acquisition
 -Electronic design and PCB development
 -Design and implementation of a test bench to simulate flight conditions
-<a href="assets/experiences/Rapport_de_Stage_FUZELLIER_Thomas_Deuxieme_Annee.pdf"
+<a href="assets/experiences/_reports/Rapport_de_Stage_FUZELLIER_Thomas_Deuxieme_Annee.pdf"
    target="_blank"
    class="report-link">
 [internship report]

@@ -1,60 +1,20 @@
-
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 const promptElement = document.getElementById("prompt");
 
-const filesystem = {
-    "/": {
-        about: {
-            "contact.txt": {},
-            "CV_FUZELLIER_Thomas.pdf": {},
-            "education.txt": {},
-            "presentation.txt": {}
-        },
-        experiences: {
-            "end-of-studies_engineering_internship.txt":{},
-            "first_job.txt":{},
-            "second_year_internship.txt":{}
-        },
-        projects: {
-            "rubiks-cube_solver.txt": {},
-            "portfolio_website.txt": {},
-            "pokemon_game.txt": {}
-        },
-        skills: {
-            "hard_skills.txt":{},
-            "soft_skills.txt":{}
-        }
-    }
-};
+/*
+ * Le système de fichiers est construit automatiquement à partir du dossier
+ * assets/ via assets/manifest.json (généré par scripts/build-manifest.js).
+ * Pour ajouter une expérience, un projet, une compétence… il suffit de déposer
+ * un .txt (ou .pdf) dans le bon dossier de assets/ et de relancer le script.
+ *
+ * Forme d'un nœud :
+ *   dossier : { type: "dir",  children: { nom: nœud, ... } }
+ *   fichier : { type: "file", path: "assets/.../fichier.txt" }
+ */
+const MANIFEST_URL = "assets/manifest.json";
 
-const fileContent = {
-
-    "presentation.txt": "assets/about/presentation.txt",
-
-    "CV_FUZELLIER_Thomas.pdf": "assets/about/CV_FUZELLIER_Thomas.pdf",
-
-    "hard_skills.txt": "assets/skills/hard_skills.txt",
-
-    "soft_skills.txt": "assets/skills/soft_skills.txt",
-
-    "first_job.txt": "assets/experiences/first_job.txt",
-
-    "end-of-studies_engineering_internship.txt": "assets/experiences/end-of-studies_engineering_internship.txt",
-
-    "second_year_internship.txt": "assets/experiences/second_year_internship.txt",
-
-    "pokemon_game.txt": "assets/projects/pokemon_game.txt",
-
-    "rubiks-cube_solver.txt": "assets/projects/rubiks-cube_solver.txt",
-
-    "portfolio_website.txt": "assets/projects/portfolio_website.txt",
-
-    "contact.txt": "assets/about/contact.txt",
-
-    "education.txt": "assets/about/education.txt"
-
-};
+let filesystem = { type: "dir", children: {} };
 
 let currentPath = ["/"];
 
@@ -76,34 +36,35 @@ const help = `
 <span class="blue-color">clear</span> → clear terminal<br>
 `;
 
-function showBootScreen() {
+const COMMANDS = ["ls", "cd", "pwd", "clear", "help", "cat"];
 
+/* ---------- Chargement du système de fichiers ---------- */
+
+async function loadFilesystem() {
+    try {
+        const response = await fetch(MANIFEST_URL, { cache: "no-cache" });
+        if (!response.ok) throw new Error(response.status);
+        filesystem = { type: "dir", children: await response.json() };
+    } catch (err) {
+        print("<span class='orange-color'>Could not load the filesystem (assets/manifest.json).</span>");
+        print("Run <span class='blue-color'>node scripts/build-manifest.js</span> then reload the page.");
+    }
+}
+
+/* ---------- Affichage ---------- */
+
+function showBootScreen() {
     output.innerHTML += banner + "<br><br>";
     output.innerHTML += help + "<br>";
-
     output.scrollTop = output.scrollHeight;
 }
 
 function print(text) {
     output.innerHTML += text + "<br>";
-
     output.scrollTop = output.scrollHeight;
 }
 
-function normalize(str) {
-    return str.toLowerCase();
-}
-
-function fuzzyMatch(input, target) {
-    input = normalize(input);
-    target = normalize(target);
-
-    let i = 0;
-    for (let c of target) {
-        if (c === input[i]) i++;
-    }
-    return i === input.length;
-}
+/* ---------- Navigation ---------- */
 
 function getPath() {
     if (currentPath.length === 1) return "~";
@@ -114,95 +75,121 @@ function updatePrompt() {
     promptElement.textContent = `thomas@portfolio:${getPath()}$`;
 }
 
-function getNode() {
-    let node = filesystem["/"];
+function nodeAt(pathArray) {
+    let node = filesystem;
 
-    for (let i = 1; i < currentPath.length; i++) {
-        node = node[currentPath[i]];
+    for (let i = 1; i < pathArray.length; i++) {
+        if (!node || node.type !== "dir") return null;
+        node = node.children[pathArray[i]];
     }
 
-    return node;
+    return node || null;
+}
+
+function getNode() {
+    return nodeAt(currentPath).children;
+}
+
+/* Résout "projects", "projects/", "../skills", "~", "/" … en tableau de chemin */
+function resolvePath(target) {
+    let parts = target.startsWith("/") || target.startsWith("~")
+        ? ["/"]
+        : [...currentPath];
+
+    target.replace(/^[~/]+/, "").split("/").forEach(segment => {
+        if (!segment || segment === ".") return;
+        if (segment === "..") {
+            if (parts.length > 1) parts.pop();
+            return;
+        }
+        parts.push(segment);
+    });
+
+    return parts;
 }
 
 function ls() {
-
     const node = getNode();
-    const items = Object.keys(node);
-
     let result = "";
 
-    items.forEach(item => {
-
-        if (item.includes(".pdf") || item.includes(".txt")) {
-            result += `<span class="file">📄 ${item}</span><br>`;
+    Object.entries(node).forEach(([name, item]) => {
+        if (item.type === "dir") {
+            result += `<span class="dir">📁 ${name}/</span><br>`;
         } else {
-            result += `<span class="dir">📁 ${item}/</span><br>`;
+            result += `<span class="file">📄 ${name}</span><br>`;
         }
-
     });
 
     print(result);
 }
 
 function cd(folder) {
-
     if (!folder) {
-        print("cd: missing argument" + "<br>");
-        return;
-    }
-
-    const node = getNode();
-
-    if (folder === "..") {
-        if (currentPath.length > 1) currentPath.pop();
+        currentPath = ["/"];
         updatePrompt();
         return;
     }
 
-    if (node[folder] && !folder.includes(".")) {
-        currentPath.push(folder);
+    const newPath = resolvePath(folder);
+    const node = nodeAt(newPath);
+
+    if (node && node.type === "dir") {
+        currentPath = newPath;
         updatePrompt();
-        print("")
+        print("");
     } else {
         print("cd: no such directory" + "<br>");
     }
 }
 
-function openFile(name) {
+async function openFile(name) {
+    if (!name) {
+        print("cat: missing argument");
+        return;
+    }
 
-    const node = getNode();
+    const node = nodeAt(resolvePath(name));
 
-    if (!node[name]) {
+    if (!node) {
         print("File not found");
         return;
     }
 
-    const content = fileContent[name];
-
-    if (!content) {
-        print("Cannot open file");
+    if (node.type === "dir") {
+        print(`cat: ${name}: Is a directory`);
         return;
     }
 
-    if (name.endsWith(".pdf")) {
-        window.open(content, "_blank");
+    /* PDF */
+    if (node.path.toLowerCase().endsWith(".pdf")) {
+        window.open(node.path, "_blank");
         return;
     }
 
     /* TEXT */
-    print(content);
+    try {
+        const response = await fetch(node.path);
+        if (!response.ok) throw new Error(response.status);
+        print(await response.text());
+    } catch (err) {
+        print("Error loading file");
+    }
 }
 
-function getAllCommands() {
-    return ["ls", "cd", "pwd", "clear", "help", "cat"];
-}
+/* ---------- Autocomplétion ---------- */
 
-function getCurrentFolders() {
-    return Object.keys(getNode());
+function fuzzyMatch(input, target) {
+    input = input.toLowerCase();
+    target = target.toLowerCase();
+
+    let i = 0;
+    for (let c of target) {
+        if (c === input[i]) i++;
+    }
+    return i === input.length;
 }
 
 function autocomplete(value) {
-
     const parts = value.split(" ");
     const command = parts[0];
     const last = parts[parts.length - 1] || "";
@@ -210,16 +197,11 @@ function autocomplete(value) {
     let options = [];
 
     if (parts.length === 1) {
-        options = ["ls", "cd", "pwd", "clear", "help", "cat"];
-    }
-
-    else if (command === "cd") {
-        options = getCurrentFolders();
-    }
-
-    else if (command === "cat") {
-
-        options = getCurrentFolders();
+        options = COMMANDS;
+    } else if (command === "cd") {
+        options = Object.keys(getNode()).filter(name => getNode()[name].type === "dir");
+    } else if (command === "cat") {
+        options = Object.keys(getNode());
     }
 
     const normalizedLast = last.toLowerCase();
@@ -229,9 +211,7 @@ function autocomplete(value) {
     );
 
     if (matches.length === 0) {
-        matches = options.filter(opt =>
-            fuzzyMatch(last, opt)
-        );
+        matches = options.filter(opt => fuzzyMatch(last, opt));
     }
 
     if (matches.length === 1) {
@@ -242,81 +222,42 @@ function autocomplete(value) {
     return value;
 }
 
-async function handleCommand(cmd) {
+/* ---------- Commandes ---------- */
 
+async function handleCommand(cmd) {
     if (!cmd) return;
 
     print(`<span class="prompt">${promptElement.textContent}</span> ${cmd}`);
 
-    if (cmd === "clear") {
-        output.innerHTML = "";
-        showBootScreen();
-        return;
-    }
+    const [command, ...args] = cmd.split(/\s+/);
+    const arg = args.join(" ");
 
-    if (cmd === "ls") {
-        ls();
-        return;
-    }
-
-    if (cmd === "pwd") {
-        print(getPath());
-        return;
-    }
-
-    if (cmd.startsWith("cd ")) {
-        cd(cmd.split(" ")[1]);
-        return;
-    }
-
-    if (cmd.startsWith("cat ")) {
-        openFile(cmd.split(" ")[1]);
-        return;
-    }
-
-    if (cmd === "help") {
-        print("Commands: <span class='blue-color'>ls</span>, <span class='blue-color'>cd</span>, <span class='blue-color'>pwd</span>, <span class='blue-color'>cat</span>, <span class='blue-color'>clear</span>");
-        return;
+    switch (command) {
+        case "clear":
+            output.innerHTML = "";
+            showBootScreen();
+            return;
+        case "ls":
+            ls();
+            return;
+        case "pwd":
+            print(getPath());
+            return;
+        case "cd":
+            cd(arg);
+            return;
+        case "cat":
+            await openFile(arg);
+            return;
+        case "help":
+            print("Commands: <span class='blue-color'>ls</span>, <span class='blue-color'>cd</span>, <span class='blue-color'>pwd</span>, <span class='blue-color'>cat</span>, <span class='blue-color'>clear</span>");
+            return;
     }
 
     print("Command not found : <span class='blue-color'>help</span> for all commands");
 }
 
-async function openFile(name) {
-
-    const node = getNode();
-
-    if (!node[name]) {
-        print("File not found");
-        return;
-    }
-
-    const path = fileContent[name];
-
-    if (!path) {
-        print("Cannot open file");
-        return;
-    }
-
-    /* PDF */
-    if (name.endsWith(".pdf")) {
-        window.open(path, "_blank");
-        return;
-    }
-
-    try {
-        const response = await fetch(path);
-        const text = await response.text();
-
-        print(text);
-
-    } catch (err) {
-        print("Error loading file");
-    }
-}
-
-input.addEventListener("keydown", async function(e) {
-
+input.addEventListener("keydown", function(e) {
     if (e.key === "Enter") {
         handleCommand(input.value.trim());
         input.value = "";
@@ -324,11 +265,14 @@ input.addEventListener("keydown", async function(e) {
 
     if (e.key === "Tab") {
         e.preventDefault();
-
-        const val = input.value;
-        input.value = autocomplete(val);
+        input.value = autocomplete(input.value);
     }
 });
 
-showBootScreen();
-updatePrompt();
+/* ---------- Démarrage ---------- */
+
+(async function init() {
+    showBootScreen();
+    updatePrompt();
+    await loadFilesystem();
+})();
