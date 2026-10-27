@@ -1,20 +1,3 @@
-#!/usr/bin/env node
-/*
- * Génère assets/manifest.json à partir du contenu du dossier assets/.
- *
- * Le navigateur ne peut pas lister le contenu d'un dossier sur un site statique :
- * ce script le fait à sa place (en local ou au build Vercel) et écrit un index
- * que js/terminal.js charge au démarrage.
- *
- * Règles :
- *  - chaque sous-dossier de assets/ devient un dossier du terminal ;
- *  - seuls les fichiers .txt et .pdf sont affichés (images, etc. ignorées) ;
- *  - tout fichier ou dossier dont le nom commence par "_" ou "." est caché
- *    (pratique pour des pièces jointes liées depuis un .txt, ex. _reports/).
- *
- * Usage : node scripts/build-manifest.js
- */
-
 const fs = require("fs");
 const path = require("path");
 

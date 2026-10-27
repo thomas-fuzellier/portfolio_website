@@ -2,17 +2,6 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 const promptElement = document.getElementById("prompt");
-
-/*
- * Le système de fichiers est construit automatiquement à partir du dossier
- * assets/ via assets/manifest.json (généré par scripts/build-manifest.js).
- * Pour ajouter une expérience, un projet, une compétence… il suffit de déposer
- * un .txt (ou .pdf) dans le bon dossier de assets/ et de relancer le script.
- *
- * Forme d'un nœud :
- *   dossier : { type: "dir",  children: { nom: nœud, ... } }
- *   fichier : { type: "file", path: "assets/.../fichier.txt" }
- */
 const MANIFEST_URL = "assets/manifest.json";
 
 let filesystem = { type: "dir", children: {} };

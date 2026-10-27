@@ -1,0 +1,10 @@
+<span class="white-color bold">Embedded Systems Engineer – Consultant</span>
+<span class="light-blue-color bold">Ethic Opex - GCK</span> <span class="light-blue-color">Cournon, France</span> September 2026 - Present
+
+After-sales service assignment: diagnosis, reliability improvement and continuous improvement of vehicles.
+
+-Hardware and software diagnosis of malfunctions reported by users
+-Corrective solutions: software realignment, calibration, test instrumentation
+-Data analysis with network and CAN tools, dynamic validation testing
+-Test reports and intervention sheets, escalation of anomalies to the design office
+-Delivery of training sessions for partner repairers
