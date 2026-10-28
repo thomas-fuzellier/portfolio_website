@@ -14,3 +14,4 @@ Project focused on the design and development of embedded systems for Earth obse
    class="report-link">
 [internship report]
 </a>
+<iframe class="anim-frame" src="animations/stratospheric-balloon.html" title="Stratospheric balloon animation" loading="lazy"></iframe>
