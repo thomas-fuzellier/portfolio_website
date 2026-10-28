@@ -13,3 +13,4 @@ Design and development of an embedded system capable of automatically solving a 
    class="report-link">
 [github project]
 </a>
+<iframe class="anim-frame" src="animations/rubiks-cube-solver.html" title="Rubik's Cube solver animation" loading="lazy"></iframe>
