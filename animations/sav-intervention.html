@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAV Intervention</title>
+<style>
+    /* Couleurs reprises de css/terminal.css */
+    :root {
+        --bg: #000000;
+        --line: #919191;
+        --dim: #30363d;
+        --problem: #f88d00;
+        --ok: #3FB950;
+        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--bg);
+        color: var(--line);
+        font-family: monospace;
+    }
+
+    /* ---------- Scène ---------- */
+
+    .sav {
+        position: relative;
+        width: 280px;
+        margin-top: 40px;   /* place pour la bulle */
+    }
+
+    .sav svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .stroke {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ground {
+        stroke: var(--dim);
+    }
+
+    /* Le bonhomme hoche légèrement la tête : il réfléchit */
+    .tech-head {
+        transform-box: fill-box;
+        transform-origin: center bottom;
+        animation: think 2s ease-in-out infinite;
+    }
+
+    @keyframes think {
+        0%, 100% { transform: rotate(0deg); }
+        50%      { transform: rotate(-6deg); }
+    }
+
+    /* La voiture tremble tant qu'il y a un problème, puis se calme */
+    .car {
+        transform-box: fill-box;
+        transform-origin: center bottom;
+        animation: shake var(--cycle) infinite;
+    }
+
+    @keyframes shake {
+        0%, 72%                         { transform: translateX(0); }
+        2%, 10%, 27%, 35%, 52%, 60%     { transform: translateX(-1px) rotate(-1deg); }
+        6%, 14%, 31%, 39%, 56%, 64%     { transform: translateX(1px) rotate(1deg); }
+        75%, 100%                       { transform: none; }
+    }
+
+    /* Témoin au-dessus de la voiture : "!" orange qui clignote, puis "✓" vert */
+    .alert, .check {
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: bold;
+        text-anchor: middle;
+    }
+
+    .alert {
+        fill: var(--problem);
+        animation: blink var(--cycle) steps(1) infinite;
+    }
+
+    .check {
+        fill: var(--ok);
+        opacity: 0;
+        animation: solved var(--cycle) infinite;
+    }
+
+    @keyframes blink {
+        0%, 6%, 12%, 18%, 24%, 30%, 36%, 42%, 48%, 54%, 60%, 66% { opacity: 1; }
+        3%, 9%, 15%, 21%, 27%, 33%, 39%, 45%, 51%, 57%, 63%, 69% { opacity: 0.2; }
+        75%, 100% { opacity: 0; }
+    }
+
+    @keyframes solved {
+        0%, 74%  { opacity: 0; }
+        77%, 97% { opacity: 1; }
+        100%     { opacity: 0; }
+    }
+
+    /* ---------- Bulle de réflexion ---------- */
+
+    .bubble {
+        position: absolute;
+        /* positionnée au-dessus de la tête du bonhomme (en % de la scène) */
+        left: 30%;
+        top: -22%;
+        width: 40px;
+        height: 40px;
+        border: 2px solid var(--dim);
+        border-radius: 50%;
+        font-size: 20px;
+    }
+
+    .bubble span {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        animation: step var(--cycle) infinite;
+    }
+
+    .bubble span:nth-child(2) { animation-delay: calc(var(--cycle) * 0.25); }
+    .bubble span:nth-child(3) { animation-delay: calc(var(--cycle) * 0.5); }
+    .bubble span:nth-child(4) { animation-delay: calc(var(--cycle) * 0.75); }
+
+    /* Chaque icône est visible pendant un quart du cycle */
+    @keyframes step {
+        0%       { opacity: 0; transform: scale(0.6); }
+        3%, 21%  { opacity: 1; transform: scale(1); }
+        25%, 100%{ opacity: 0; transform: scale(0.6); }
+    }
+
+    /* ---------- Légende ---------- */
+
+    .label {
+        position: relative;
+        height: 1.4em;
+        margin-top: 10px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .label span {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation: step var(--cycle) infinite;
+    }
+
+    .label span:nth-child(2) { animation-delay: calc(var(--cycle) * 0.25); }
+    .label span:nth-child(3) { animation-delay: calc(var(--cycle) * 0.5); }
+    .label span:nth-child(4) { animation-delay: calc(var(--cycle) * 0.75); color: var(--ok); }
+
+    /* Accessibilité : sans animation, on affiche directement l'état "réparé" */
+    @media (prefers-reduced-motion: reduce) {
+        .tech-head, .car, .alert { animation: none; }
+        .alert { opacity: 0; }
+        .check { animation: none; opacity: 1; }
+        .bubble span, .label span { animation: none; }
+        .bubble span:nth-child(4), .label span:nth-child(4) { opacity: 1; }
+    }
+</style>
+</head>
+<body>
+
+<div class="sav" role="img" aria-label="An engineer thinks next to a bus: mechanical, electrical or software issue, then fixed.">
+
+    <div class="bubble" aria-hidden="true">
+        <span>🔧</span><span>⚡️</span><span>💻</span><span>✅</span>
+    </div>
+
+    <svg viewBox="0 0 280 120" aria-hidden="true">
+        <!-- sol -->
+        <line class="stroke ground" x1="0" y1="110" x2="280" y2="110"/>
+
+        <!-- petites bulles qui montent vers la grande bulle -->
+        <circle cx="82" cy="36" r="2" fill="#30363d"/>
+        <circle cx="89" cy="26" r="3" fill="#30363d"/>
+
+        <!-- ===== Technicien ===== -->
+        <g class="tech">
+            <g class="tech-head">
+                <circle class="stroke" cx="70" cy="48" r="8"/>
+            </g>
+            <!-- corps -->
+            <line class="stroke" x1="70" y1="56" x2="70" y2="84"/>
+            <!-- bras : main au menton (réfléchit) -->
+            <polyline class="stroke" points="70,64 80,70 76,56"/>
+            <!-- bras : main sur la hanche -->
+            <polyline class="stroke" points="70,64 60,72 66,80"/>
+            <!-- jambes -->
+            <line class="stroke" x1="70" y1="84" x2="62" y2="110"/>
+            <line class="stroke" x1="70" y1="84" x2="78" y2="110"/>
+        </g>
+
+        <!-- ===== Bus (avant tourné vers le technicien) ===== -->
+        <g class="car">
+            <!-- caisse -->
+            <path class="stroke" d="M108 98 L108 54 Q108 46 116 46 L262 46 Q268 46 268 52 L268 98"/>
+            <!-- bas de caisse entre les roues -->
+            <line class="stroke" x1="108" y1="98" x2="147" y2="98"/>
+            <line class="stroke" x1="173" y1="98" x2="225" y2="98"/>
+            <line class="stroke" x1="251" y1="98" x2="268" y2="98"/>
+            <!-- pare-brise -->
+            <path class="stroke" d="M112 52 L124 52 L124 74 L112 74"/>
+            <!-- porte -->
+            <rect class="stroke" x="129" y="54" width="14" height="40" rx="1"/>
+            <line class="stroke" x1="136" y1="54" x2="136" y2="94"/>
+            <!-- rangée de vitres -->
+            <rect class="stroke" x="149" y="54" width="25" height="16" rx="2"/>
+            <rect class="stroke" x="180" y="54" width="25" height="16" rx="2"/>
+            <rect class="stroke" x="211" y="54" width="25" height="16" rx="2"/>
+            <rect class="stroke" x="242" y="54" width="20" height="16" rx="2"/>
+            <!-- phare -->
+            <circle cx="113" cy="88" r="2" fill="#919191"/>
+            <!-- roues -->
+            <circle class="stroke" cx="160" cy="100" r="11"/>
+            <circle class="stroke" cx="238" cy="100" r="11"/>
+            <circle cx="160" cy="100" r="2" fill="#919191"/>
+            <circle cx="238" cy="100" r="2" fill="#919191"/>
+        </g>
+
+        <!-- témoin d'état au-dessus de l'avant du bus -->
+        <text class="alert" x="118" y="38">!</text>
+        <text class="check" x="118" y="38">✓</text>
+    </svg>
+
+    <div class="label">
+        <span>mechanical?</span><span>electrical?</span><span>software?</span><span>fixed ✓</span>
+    </div>
+</div>
+
+</body>
+</html>
