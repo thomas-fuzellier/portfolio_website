@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical LLM Pipeline</title>
+<style>
+    /* Couleurs reprises de css/terminal.css */
+    :root {
+        --bg: #000000;
+        --line: #919191;
+        --dim: #30363d;
+        --signal: #58A6FF;
+        --accent: #ffe600;
+        --ok: #3FB950;
+        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--bg);
+        color: var(--line);
+        font-family: monospace;
+    }
+
+    .scene {
+        width: 280px;
+    }
+
+    .scene svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .stroke {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .thin { stroke-width: 1; }
+    .dim  { stroke: var(--dim); }
+
+    text {
+        font-family: monospace;
+        text-anchor: middle;
+        fill: var(--line);
+        font-size: 8px;
+    }
+
+    /* ---------- Étape 1 : lecture du texte clinique libre ---------- */
+
+    .scan {
+        stroke: var(--signal);
+        stroke-width: 1.5;
+        animation: scan var(--cycle) linear infinite;
+    }
+
+    @keyframes scan {
+        0%        { transform: translateY(0);    opacity: 1; }
+        22%       { transform: translateY(44px); opacity: 1; }
+        25%, 100% { transform: translateY(44px); opacity: 0; }
+    }
+
+    /* Flux de données entre les étapes */
+    .flow {
+        fill: none;
+        stroke: var(--signal);
+        stroke-width: 1.5;
+        stroke-dasharray: 3 4;
+        opacity: 0.25;
+        animation: data 0.6s linear infinite, var(--cycle) steps(1) infinite;
+    }
+
+    .flow.f1 { animation-name: data, active-1; }
+    .flow.f2 { animation-name: data, active-2; }
+    .flow.f3 { animation-name: data, active-3; }
+
+    @keyframes data { to { stroke-dashoffset: -7; } }
+
+    @keyframes active-1 { 0% { opacity: 0.25; } 15% { opacity: 1; } 50% { opacity: 0.25; } }
+    @keyframes active-2 { 0% { opacity: 0.25; } 45% { opacity: 1; } 75% { opacity: 0.25; } }
+    @keyframes active-3 { 0% { opacity: 0.25; } 72% { opacity: 1; } 100% { opacity: 0.25; } }
+
+    /* ---------- Étape 2 : appels LLM via l'API REST ---------- */
+
+    .llm-box {
+        animation: think var(--cycle) infinite;
+    }
+
+    @keyframes think {
+        0%, 22%, 75%, 100% { stroke: var(--line); }
+        28%, 70%           { stroke: var(--signal); }
+    }
+
+    .api {
+        font-size: 7px;
+        fill: var(--accent);
+        opacity: 0;
+        animation: api var(--cycle) infinite;
+    }
+
+    /* "POST /api" clignote à chaque requête */
+    @keyframes api {
+        0%, 26%   { opacity: 0; }
+        29%, 35%  { opacity: 1; }
+        38%, 40%  { opacity: 0; }
+        43%, 49%  { opacity: 1; }
+        52%, 100% { opacity: 0; }
+    }
+
+    /* ---------- Étape 3 : données structurées ---------- */
+
+    .value {
+        stroke: var(--ok);
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        opacity: 0;
+        animation: var(--cycle) infinite;
+    }
+
+    .value.v1 { animation-name: fill-1; }
+    .value.v2 { animation-name: fill-2; }
+    .value.v3 { animation-name: fill-3; }
+
+    @keyframes fill-1 { 0%, 52% { opacity: 0; } 55%, 97% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes fill-2 { 0%, 58% { opacity: 0; } 61%, 97% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes fill-3 { 0%, 64% { opacity: 0; } 67%, 97% { opacity: 1; } 100% { opacity: 0; } }
+
+    .key {
+        font-size: 7px;
+        text-anchor: start;
+    }
+
+    /* ---------- Étape 4 : benchmark des modèles ---------- */
+
+    .bar {
+        transform-box: fill-box;
+        transform-origin: center bottom;
+        transform: scaleY(0);
+        animation: var(--cycle) ease-out infinite;
+    }
+
+    .bar.b1 { animation-name: grow-1; }
+    .bar.b2 { animation-name: grow-2; }
+    .bar.b3 { animation-name: grow-3; }
+
+    @keyframes grow-1 { 0%, 76% { transform: scaleY(0); } 84%, 97% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+    @keyframes grow-2 { 0%, 78% { transform: scaleY(0); } 87%, 97% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+    @keyframes grow-3 { 0%, 80% { transform: scaleY(0); } 90%, 97% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+
+    .bar      { fill: #5a5a5a; }
+    .bar.best { fill: var(--ok); }
+
+    /* ---------- Légende ---------- */
+
+    .label {
+        position: relative;
+        height: 1.4em;
+        margin-top: 10px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .label span {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation: step var(--cycle) infinite;
+    }
+
+    .label span:nth-child(2) { animation-delay: calc(var(--cycle) * 0.25); }
+    .label span:nth-child(3) { animation-delay: calc(var(--cycle) * 0.5); }
+    .label span:nth-child(4) { animation-delay: calc(var(--cycle) * 0.75); color: var(--ok); }
+
+    @keyframes step {
+        0%        { opacity: 0; }
+        3%, 21%   { opacity: 1; }
+        25%, 100% { opacity: 0; }
+    }
+
+    /* Accessibilité : sans animation, on affiche le résultat final */
+    @media (prefers-reduced-motion: reduce) {
+        .scan, .flow, .llm-box, .api, .value, .bar, .label span { animation: none; }
+        .scan, .api { opacity: 0; }
+        .value, .label span:nth-child(4) { opacity: 1; }
+        .bar { transform: none; }
+    }
+</style>
+</head>
+<body>
+
+<div class="scene" role="img" aria-label="Clinical free text is sent to an LLM through a REST API, turned into structured data, and models are benchmarked.">
+
+    <svg viewBox="0 0 280 120" aria-hidden="true">
+
+        <!-- ===== Note clinique en texte libre ===== -->
+        <path class="stroke" d="M8 32 L38 32 L48 42 L48 98 L8 98 Z"/>
+        <path class="stroke thin" d="M38 32 L38 42 L48 42"/>
+        <!-- croix médicale -->
+        <path class="stroke thin" d="M17 36 L17 44 M13 40 L21 40"/>
+        <!-- texte manuscrit (lignes ondulées) -->
+        <g class="stroke thin dim">
+            <path d="M13 52 q4 -3 8 0 t8 0 t8 0 t5 0"/>
+            <path d="M13 60 q4 -3 8 0 t8 0 t8 0"/>
+            <path d="M13 68 q4 -3 8 0 t8 0 t8 0 t5 0"/>
+            <path d="M13 76 q4 -3 8 0 t8 0"/>
+            <path d="M13 84 q4 -3 8 0 t8 0 t8 0 t5 0"/>
+            <path d="M13 92 q4 -3 8 0 t8 0 t6 0"/>
+        </g>
+        <line class="scan" x1="11" y1="48" x2="45" y2="48"/>
+        <text x="28" y="112">free text</text>
+
+        <!-- note → LLM -->
+        <path class="flow f1" d="M50 65 L80 65"/>
+
+        <!-- ===== LLM via API REST ===== -->
+        <rect class="stroke llm-box" x="82" y="48" width="42" height="34" rx="4"/>
+        <text x="103" y="69" font-size="10">LLM</text>
+        <text class="api" x="103" y="40">POST /api</text>
+        <text x="103" y="112">REST API</text>
+
+        <!-- LLM → données structurées -->
+        <path class="flow f2" d="M126 65 L142 65"/>
+
+        <!-- ===== Tableau de données structurées ===== -->
+        <rect class="stroke thin" x="144" y="40" width="58" height="50" rx="2"/>
+        <line class="stroke thin dim" x1="144" y1="57" x2="202" y2="57"/>
+        <line class="stroke thin dim" x1="144" y1="73" x2="202" y2="73"/>
+        <line class="stroke thin dim" x1="168" y1="40" x2="168" y2="90"/>
+        <text class="key" x="147" y="51">age</text>
+        <text class="key" x="147" y="68">diag</text>
+        <text class="key" x="147" y="84">drug</text>
+        <line class="value v1" x1="173" y1="49" x2="186" y2="49"/>
+        <line class="value v2" x1="173" y1="65" x2="196" y2="65"/>
+        <line class="value v3" x1="173" y1="81" x2="191" y2="81"/>
+        <text x="173" y="112">structured</text>
+
+        <!-- données → benchmark -->
+        <path class="flow f3" d="M204 65 L216 65"/>
+
+        <!-- ===== Benchmark des modèles ===== -->
+        <line class="stroke thin dim" x1="220" y1="90" x2="272" y2="90"/>
+        <line class="stroke thin dim" x1="220" y1="40" x2="220" y2="90"/>
+        <rect class="bar b1"      x="226" y="64" width="10" height="26"/>
+        <rect class="bar b2 best" x="242" y="46" width="10" height="44"/>
+        <rect class="bar b3"      x="258" y="58" width="10" height="32"/>
+        <text x="246" y="112">benchmark</text>
+    </svg>
+
+    <div class="label">
+        <span>reading clinical notes</span><span>LLM calls via REST API</span><span>structuring medical data</span><span>models benchmarked ✓</span>
+    </div>
+</div>
+
+</body>
+</html>

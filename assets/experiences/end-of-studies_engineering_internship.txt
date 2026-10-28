@@ -14,3 +14,4 @@ Project for automated analysis of clinical data using language models (LLM), aim
    class="report-link">
 [internship report]
 </a>
+<iframe class="anim-frame" src="animations/clinical-llm-pipeline.html" title="Clinical LLM pipeline animation" loading="lazy"></iframe>

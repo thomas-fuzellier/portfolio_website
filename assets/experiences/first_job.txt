@@ -9,5 +9,4 @@ First engineering position within a SME specialized in elevator systems. Contrib
 -Development of Python tools to automate testing and analyze operational data
 -Technical support for fault diagnosis and troubleshooting
 -Management and maintenance of the company website
-
 <iframe class="anim-frame" src="animations/elevator-firmware.html" title="Elevator firmware animation" loading="lazy"></iframe>
