@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Job Generator</title>
+<style>
+    /* Couleurs reprises de css/terminal.css */
+    :root {
+        --bg: #000000;
+        --line: #919191;
+        --dim: #30363d;
+        --signal: #58A6FF;
+        --accent: #ffe600;
+        --ok: #3FB950;
+        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--bg);
+        color: var(--line);
+        font-family: monospace;
+    }
+
+    .scene {
+        width: 280px;
+    }
+
+    .scene svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .stroke {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .thin { stroke-width: 1; }
+    .dim  { stroke: var(--dim); }
+
+    text {
+        font-family: monospace;
+        text-anchor: middle;
+        fill: var(--line);
+    }
+
+    /* ---------- Étape 1 : lecture de l'offre d'emploi ---------- */
+
+    .scan {
+        stroke: var(--signal);
+        stroke-width: 1.5;
+        animation: scan var(--cycle) linear infinite;
+    }
+
+    @keyframes scan {
+        0%        { transform: translateY(0);    opacity: 1; }
+        22%       { transform: translateY(44px); opacity: 1; }
+        25%, 100% { transform: translateY(44px); opacity: 0; }
+    }
+
+    /* Flux de données entre les étapes */
+    .flow {
+        fill: none;
+        stroke: var(--signal);
+        stroke-width: 1.5;
+        stroke-dasharray: 3 4;
+        opacity: 0.25;
+        animation: data 0.6s linear infinite, var(--cycle) steps(1) infinite;
+    }
+
+    .flow.f1 { animation-name: data, active-1; }
+    .flow.f2 { animation-name: data, active-2; }
+    .flow.f3 { animation-name: data, active-3; }
+
+    @keyframes data { to { stroke-dashoffset: -7; } }
+
+    @keyframes active-1 { 0% { opacity: 0.25; } 15% { opacity: 1; } 50% { opacity: 0.25; } }
+    @keyframes active-2 { 0% { opacity: 0.25; } 45% { opacity: 1; } 75% { opacity: 0.25; } }
+    @keyframes active-3 { 0% { opacity: 0.25; } 72% { opacity: 1; } 100% { opacity: 0.25; } }
+
+    /* ---------- Étape 2 : le LLM détecte la langue ---------- */
+
+    .llm-box {
+        animation: think var(--cycle) infinite;
+    }
+
+    @keyframes think {
+        0%, 22%, 75%, 100% { stroke: var(--line); }
+        28%, 70%           { stroke: var(--signal); }
+    }
+
+    .lang {
+        font-size: 9px;
+        fill: var(--accent);
+        opacity: 0;
+        animation: lang var(--cycle) infinite;
+    }
+
+    @keyframes lang {
+        0%, 27%   { opacity: 0; }
+        31%, 95%  { opacity: 1; }
+        100%      { opacity: 0; }
+    }
+
+    /* ---------- Étape 3 : sélection dans la bibliothèque validée ---------- */
+
+    .block {
+        animation: var(--cycle) steps(1) infinite;
+    }
+
+    .block.pick-1 { animation-name: pick-1; }
+    .block.pick-2 { animation-name: pick-2; }
+
+    @keyframes pick-1 {
+        0%   { stroke: var(--dim); }
+        54%  { stroke: var(--ok); }
+        98%  { stroke: var(--dim); }
+    }
+
+    @keyframes pick-2 {
+        0%   { stroke: var(--dim); }
+        64%  { stroke: var(--ok); }
+        98%  { stroke: var(--dim); }
+    }
+
+    /* ---------- Étape 4 : CV, lettre PDF et suivi Excel ---------- */
+
+    .output {
+        opacity: 0;
+        animation: var(--cycle) infinite;
+    }
+
+    .output.o1 { animation-name: out-1; }
+    .output.o2 { animation-name: out-2; }
+    .output.o3 { animation-name: out-3; }
+
+    @keyframes out-1 { 0%, 76% { opacity: 0; } 79%, 97% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes out-2 { 0%, 81% { opacity: 0; } 84%, 97% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes out-3 { 0%, 86% { opacity: 0; } 89%, 97% { opacity: 1; } 100% { opacity: 0; } }
+
+    .out-text {
+        font-size: 8px;
+    }
+
+    /* ---------- Légende ---------- */
+
+    .label {
+        position: relative;
+        height: 1.4em;
+        margin-top: 10px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .label span {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation: step var(--cycle) infinite;
+    }
+
+    .label span:nth-child(2) { animation-delay: calc(var(--cycle) * 0.25); }
+    .label span:nth-child(3) { animation-delay: calc(var(--cycle) * 0.5); }
+    .label span:nth-child(4) { animation-delay: calc(var(--cycle) * 0.75); color: var(--ok); }
+
+    @keyframes step {
+        0%        { opacity: 0; }
+        3%, 21%   { opacity: 1; }
+        25%, 100% { opacity: 0; }
+    }
+
+    /* Accessibilité : sans animation, on affiche le résultat final */
+    @media (prefers-reduced-motion: reduce) {
+        .scan, .flow, .llm-box, .lang, .block, .output, .label span { animation: none; }
+        .scan { opacity: 0; }
+        .lang, .output, .label span:nth-child(4) { opacity: 1; }
+        .block.pick-1, .block.pick-2 { stroke: var(--ok); }
+    }
+</style>
+</head>
+<body>
+
+<div class="scene" role="img" aria-label="A job offer is read by an LLM, which detects the language and selects validated content to produce a CV, a PDF cover letter and an Excel tracker.">
+
+    <svg viewBox="0 0 280 120" aria-hidden="true">
+
+        <!-- ===== Offre d'emploi ===== -->
+        <path class="stroke" d="M8 32 L38 32 L48 42 L48 98 L8 98 Z"/>
+        <path class="stroke thin" d="M38 32 L38 42 L48 42"/>
+        <g class="stroke thin dim">
+            <line x1="14" y1="48" x2="40" y2="48"/>
+            <line x1="14" y1="56" x2="42" y2="56"/>
+            <line x1="14" y1="64" x2="34" y2="64"/>
+            <line x1="14" y1="72" x2="42" y2="72"/>
+            <line x1="14" y1="80" x2="38" y2="80"/>
+            <line x1="14" y1="88" x2="30" y2="88"/>
+        </g>
+        <line class="scan" x1="11" y1="46" x2="45" y2="46"/>
+        <text x="28" y="112" font-size="8">job offer</text>
+
+        <!-- offre → LLM -->
+        <path class="flow f1" d="M50 65 L82 65"/>
+
+        <!-- ===== LLM ===== -->
+        <rect class="stroke llm-box" x="84" y="48" width="44" height="34" rx="4"/>
+        <text x="106" y="69" font-size="10">LLM</text>
+        <text class="lang" x="106" y="40">lang: EN</text>
+
+        <!-- LLM → bibliothèque -->
+        <path class="flow f2" d="M130 65 L148 65"/>
+
+        <!-- ===== Bibliothèque de contenus validés ===== -->
+        <rect class="stroke thin dim" x="150" y="28" width="46" height="74" rx="2"/>
+        <rect class="stroke thin dim block"      x="155" y="34" width="36" height="10" rx="1"/>
+        <rect class="stroke thin block pick-1" x="155" y="48" width="36" height="10" rx="1"/>
+        <rect class="stroke thin dim block"      x="155" y="62" width="36" height="10" rx="1"/>
+        <rect class="stroke thin block pick-2" x="155" y="76" width="36" height="10" rx="1"/>
+        <rect class="stroke thin dim block"      x="155" y="90" width="36" height="8"  rx="1"/>
+        <text x="173" y="112" font-size="8">validated</text>
+
+        <!-- bibliothèque → sorties -->
+        <path class="flow f3" d="M198 65 L216 65"/>
+
+        <!-- ===== Sorties ===== -->
+        <!-- CV -->
+        <g class="output o1">
+            <rect class="stroke thin" x="222" y="22" width="22" height="26" rx="1"/>
+            <circle class="stroke thin" cx="229" cy="30" r="3"/>
+            <line class="stroke thin" x1="234" y1="29" x2="240" y2="29"/>
+            <line class="stroke thin" x1="226" y1="38" x2="240" y2="38"/>
+            <line class="stroke thin" x1="226" y1="43" x2="236" y2="43"/>
+            <text class="out-text" x="260" y="38">CV</text>
+        </g>
+        <!-- Lettre PDF -->
+        <g class="output o2">
+            <rect class="stroke thin" x="220" y="56" width="26" height="18" rx="1"/>
+            <polyline class="stroke thin" points="220,56 233,67 246,56"/>
+            <text class="out-text" x="260" y="68">PDF</text>
+        </g>
+        <!-- Suivi Excel -->
+        <g class="output o3">
+            <rect class="stroke thin" x="221" y="82" width="24" height="18" rx="1"/>
+            <line class="stroke thin" x1="221" y1="88" x2="245" y2="88"/>
+            <line class="stroke thin" x1="221" y1="94" x2="245" y2="94"/>
+            <line class="stroke thin" x1="229" y1="82" x2="229" y2="100"/>
+            <line class="stroke thin" x1="237" y1="82" x2="237" y2="100"/>
+            <text class="out-text" x="260" y="94">XLSX</text>
+        </g>
+    </svg>
+
+    <div class="label">
+        <span>reading job offer</span><span>detecting language</span><span>picking validated content</span><span>CV · letter · tracker ✓</span>
+    </div>
+</div>
+
+</body>
+</html>

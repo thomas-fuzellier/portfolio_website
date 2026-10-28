@@ -11,3 +11,5 @@ Desktop application that generates a tailored CV, a PDF cover letter and an Exce
    class="report-link">
 [github project]
 </a>
+
+<iframe class="anim-frame" src="animations/ai-job-generator.html" title="AI job application generator animation" loading="lazy"></iframe>
