@@ -8,4 +8,5 @@ After-sales service assignment: diagnosis, reliability improvement and continuou
 -Data analysis with network and CAN tools, dynamic validation testing
 -Test reports and intervention sheets, escalation of anomalies to the design office
 -Delivery of training sessions for partner repairers
+
 <iframe class="anim-frame" src="animations/sav-intervention.html" title="After-sales intervention animation" loading="lazy"></iframe>
