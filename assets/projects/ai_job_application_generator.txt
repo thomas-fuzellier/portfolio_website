@@ -1,0 +1,13 @@
+<span class="white-color bold">Personal Project – AI-Assisted Job Application Generator</span>
+<span class="light-blue-color bold">Personal project</span> <span class="light-blue-color">Python · Tkinter · Groq API (LLM) · pytest</span> 2026
+
+Desktop application that generates a tailored CV, a PDF cover letter and an Excel application tracker from a job offer:
+
+-LLM pipeline: language detection, selection of the most relevant CV and pre-written paragraphs
+-AI restricted to selecting validated content, with no generated text, for a fully controlled output
+-Modular architecture, PDF and Excel export, unit tests with a mocked API
+<a href="https://github.com/thomas-fuzellier/AI-Job-Application-Optimizer"
+   target="_blank"
+   class="report-link">
+[github project]
+</a>
