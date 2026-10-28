@@ -31,6 +31,10 @@
         "type": "file",
         "path": "assets/experiences/first_job.txt"
       },
+      "second_job.txt": {
+        "type": "file",
+        "path": "assets/experiences/second_job.txt"
+      },
       "second_year_internship.txt": {
         "type": "file",
         "path": "assets/experiences/second_year_internship.txt"
@@ -40,6 +44,10 @@
   "projects": {
     "type": "dir",
     "children": {
+      "ai_job_application_generator.txt": {
+        "type": "file",
+        "path": "assets/projects/ai_job_application_generator.txt"
+      },
       "pokemon_game.txt": {
         "type": "file",
         "path": "assets/projects/pokemon_game.txt"

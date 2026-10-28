@@ -23,6 +23,8 @@ const help = `
 <span class="blue-color">cat [file]</span> → cat file (txt or pdf)<br>
 <span class="blue-color">pwd</span> → show current directory<br>
 <span class="blue-color">clear</span> → clear terminal<br>
+
+<span class="tip">💡 Tip: click on folders and files, or use the shortcuts below.</span><br>
 `;
 
 const COMMANDS = ["ls", "cd", "pwd", "clear", "help", "cat"];
@@ -97,15 +99,22 @@ function resolvePath(target) {
     return parts;
 }
 
+/* Chemin absolu d'un élément du dossier courant, ex. "/projects/pokemon_game.txt" */
+function absolutePath(name) {
+    return "/" + [...currentPath.slice(1), name].join("/");
+}
+
+/* Chaque entrée affichée par ls est cliquable : cd pour un dossier, cat pour un fichier.
+   On utilise le chemin absolu pour que le clic marche même après un cd ailleurs. */
 function ls() {
     const node = getNode();
     let result = "";
 
     Object.entries(node).forEach(([name, item]) => {
         if (item.type === "dir") {
-            result += `<span class="dir">📁 ${name}/</span><br>`;
+            result += `<span class="dir clickable" data-cmd="cd ${absolutePath(name)}">📁 ${name}/</span><br>`;
         } else {
-            result += `<span class="file">📄 ${name}</span><br>`;
+            result += `<span class="file clickable" data-cmd="cat ${absolutePath(name)}">📄 ${name}</span><br>`;
         }
     });
 
@@ -273,9 +282,66 @@ async function handleCommand(cmd) {
     print("Command not found : <span class='blue-color'>help</span> for all commands");
 }
 
+/* ---------- Commandes lancées au clic ---------- */
+
+/* Les commandes sont exécutées l'une après l'autre, même si on clique vite */
+let commandQueue = Promise.resolve();
+
+function runCommands(...cmds) {
+    cmds.forEach(cmd => {
+        commandQueue = commandQueue.then(() => handleCommand(cmd));
+    });
+
+    // Sur ordinateur, on remet le curseur dans la ligne de saisie
+    // (pas sur mobile, pour ne pas ouvrir le clavier à chaque clic)
+    if (window.matchMedia("(pointer: fine)").matches) input.focus();
+
+    return commandQueue;
+}
+
+/* Clic sur une entrée de ls (ou tout élément avec data-cmd) dans la sortie */
+output.addEventListener("click", function(e) {
+    const target = e.target.closest("[data-cmd]");
+    if (target) runCommands(target.dataset.cmd);
+});
+
+/* ---------- Raccourcis sous le terminal ---------- */
+
+/* Dossier → cd + ls ; fichier → cat. Le CV est cherché dans about/ (premier PDF "CV…"). */
+function findCv() {
+    const about = filesystem.children.about;
+    if (!about || about.type !== "dir") return null;
+    const name = Object.keys(about.children).find(n => /^cv.*\.pdf$/i.test(n));
+    return name ? `/about/${name}` : null;
+}
+
+function buildShortcuts() {
+    const bar = document.getElementById("shortcuts");
+    if (!bar) return;
+
+    const shortcuts = Object.keys(filesystem.children)
+        .filter(name => filesystem.children[name].type === "dir")
+        .map(name => ({ label: `${name}/`, cmds: [`cd /${name}`, "ls"] }));
+
+    const cv = findCv();
+    if (cv) shortcuts.push({ label: "CV.pdf", cmds: [`cat ${cv}`], className: "cv" });
+
+    shortcuts.push({ label: "clear", cmds: ["clear"], className: "muted" });
+
+    bar.innerHTML = "";
+    shortcuts.forEach(({ label, cmds, className }) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        if (className) button.classList.add(className);
+        button.addEventListener("click", () => runCommands(...cmds));
+        bar.appendChild(button);
+    });
+}
+
 input.addEventListener("keydown", function(e) {
     if (e.key === "Enter") {
-        handleCommand(input.value.trim());
+        runCommands(input.value.trim());
         input.value = "";
     }
 
@@ -295,4 +361,5 @@ input.addEventListener("keydown", function(e) {
     showBootScreen();
     updatePrompt();
     await loadFilesystem();
+    buildShortcuts();
 })();
