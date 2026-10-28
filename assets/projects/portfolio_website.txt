@@ -16,3 +16,4 @@ Development of a Linux-style interactive portfolio website simulating a real com
    class="report-link">
 [github project]
 </a>
+<iframe class="anim-frame" src="animations/portfolio-terminal.html" title="Portfolio terminal animation" loading="lazy"></iframe>

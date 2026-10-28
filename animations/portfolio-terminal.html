@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Terminal</title>
+<style>
+    /* Couleurs reprises de css/terminal.css */
+    :root {
+        --bg: #000000;
+        --line: #919191;
+        --dim: #30363d;
+        --signal: #58A6FF;
+        --accent: #ffe600;
+        --ok: #3FB950;
+        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--bg);
+        color: var(--line);
+        font-family: monospace;
+    }
+
+    .scene {
+        width: 280px;
+    }
+
+    .scene svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .stroke {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .thin { stroke-width: 1; }
+    .dim  { stroke: var(--dim); }
+
+    text {
+        font-family: monospace;
+        fill: var(--line);
+        font-size: 7px;
+    }
+
+    .caption {
+        font-size: 8px;
+        text-anchor: middle;
+    }
+
+    .prompt { fill: var(--ok); }
+
+    /* ---------- Étape 1 : un nouveau fichier arrive dans assets/ ---------- */
+
+    .new-file {
+        animation: drop var(--cycle) ease-out infinite;
+    }
+
+    @keyframes drop {
+        0%, 3%    { transform: translateY(-26px); opacity: 0; }
+        8%        { opacity: 1; }
+        16%, 95%  { transform: translateY(0);     opacity: 1; }
+        98%, 100% { transform: translateY(0);     opacity: 0; }
+    }
+
+    .new-file rect { stroke: var(--ok); }
+
+    /* ---------- Étape 2 : génération du manifest ---------- */
+
+    .flow {
+        fill: none;
+        stroke: var(--signal);
+        stroke-width: 1.5;
+        stroke-dasharray: 3 4;
+        opacity: 0.25;
+        animation: data 0.6s linear infinite, build var(--cycle) steps(1) infinite;
+    }
+
+    @keyframes data { to { stroke-dashoffset: -7; } }
+
+    @keyframes build {
+        0%  { opacity: 0.25; }
+        26% { opacity: 1; }
+        50% { opacity: 0.25; }
+    }
+
+    .manifest {
+        font-size: 12px;
+        text-anchor: middle;
+        animation: manifest var(--cycle) infinite;
+    }
+
+    @keyframes manifest {
+        0%, 25%, 50%, 100% { fill: var(--line); }
+        29%, 46%           { fill: var(--accent); }
+    }
+
+    /* ---------- Étapes 3 et 4 : commandes tapées dans le terminal ---------- */
+
+    /* Chaque ligne est cachée par un cache noir qui se retire caractère par caractère */
+    .cover {
+        fill: var(--bg);
+        transform-box: fill-box;
+        transform-origin: right center;
+        animation: var(--cycle) infinite;
+    }
+
+    .cover.c1 { animation-name: type-1; animation-timing-function: steps(5, end); }
+    .cover.c3 { animation-name: type-3; animation-timing-function: steps(10, end); }
+    .cover.c4 { animation-name: type-4; animation-timing-function: steps(22, end); }
+
+    @keyframes type-1 { 0%, 50% { transform: scaleX(1); } 53%, 100% { transform: scaleX(0); } }
+    @keyframes type-3 { 0%, 57% { transform: scaleX(1); } 62%, 100% { transform: scaleX(0); } }
+    @keyframes type-4 { 0%, 76% { transform: scaleX(1); } 84%, 100% { transform: scaleX(0); } }
+
+    /* Lignes qui apparaissent d'un coup (sorties de commande) */
+    .out {
+        opacity: 0;
+        animation: var(--cycle) steps(1) infinite;
+    }
+
+    .out.o2   { animation-name: show-2; }
+    .out.o5   { animation-name: show-5; }
+    .out.o6   { animation-name: show-6; }
+
+    @keyframes show-2 { 0% { opacity: 0; } 55% { opacity: 1; } 98% { opacity: 0; } }
+    @keyframes show-5 { 0% { opacity: 0; } 86% { opacity: 1; } 98% { opacity: 0; } }
+    @keyframes show-6 { 0% { opacity: 0; } 89% { opacity: 1; } 98% { opacity: 0; } }
+
+    /* "cd proj" puis TAB → "cd projects/" */
+    .before-tab { animation: before-tab var(--cycle) steps(1) infinite; }
+    .after-tab  { opacity: 0; animation: after-tab var(--cycle) steps(1) infinite; }
+
+    @keyframes before-tab { 0% { opacity: 1; } 67% { opacity: 0; } 98% { opacity: 1; } }
+    @keyframes after-tab  { 0% { opacity: 0; } 67% { opacity: 1; } 98% { opacity: 0; } }
+
+    .tab-key {
+        font-size: 6px;
+        fill: var(--accent);
+        opacity: 0;
+        animation: tab-key var(--cycle) steps(1) infinite;
+    }
+
+    @keyframes tab-key { 0% { opacity: 0; } 63% { opacity: 1; } 70% { opacity: 0; } }
+
+    .out-line { stroke: var(--ok); }
+
+    /* Curseur clignotant */
+    .cursor {
+        fill: var(--line);
+        animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ---------- Légende ---------- */
+
+    .label {
+        position: relative;
+        height: 1.4em;
+        margin-top: 10px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .label span {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation: step var(--cycle) infinite;
+    }
+
+    .label span:nth-child(2) { animation-delay: calc(var(--cycle) * 0.25); }
+    .label span:nth-child(3) { animation-delay: calc(var(--cycle) * 0.5); }
+    .label span:nth-child(4) { animation-delay: calc(var(--cycle) * 0.75); color: var(--ok); }
+
+    @keyframes step {
+        0%        { opacity: 0; }
+        3%, 21%   { opacity: 1; }
+        25%, 100% { opacity: 0; }
+    }
+
+    /* Accessibilité : sans animation, on affiche le terminal complet */
+    @media (prefers-reduced-motion: reduce) {
+        .new-file, .flow, .manifest, .cover, .out, .before-tab, .after-tab,
+        .tab-key, .cursor, .label span {
+            animation: none;
+        }
+        .cover, .before-tab, .tab-key { opacity: 0; }
+        .out, .after-tab, .label span:nth-child(4) { opacity: 1; }
+    }
+</style>
+</head>
+<body>
+
+<div class="scene" role="img" aria-label="A new text file is dropped into the assets folder, the manifest is generated, and the file is opened from the terminal with tab completion.">
+
+    <svg viewBox="0 0 280 120" aria-hidden="true">
+
+        <!-- ===== Dossier assets/ ===== -->
+        <!-- fichiers existants qui dépassent du dossier -->
+        <rect class="stroke thin dim" x="16" y="40" width="12" height="16" rx="1"/>
+        <rect class="stroke thin dim" x="40" y="42" width="12" height="14" rx="1"/>
+        <!-- nouveau fichier .txt -->
+        <g class="new-file">
+            <rect class="stroke thin" x="28" y="36" width="12" height="20" rx="1"/>
+            <text x="34" y="34" text-anchor="middle" font-size="6" fill="#3FB950">.txt</text>
+        </g>
+        <!-- dossier (dessiné après les fichiers pour les recouvrir) -->
+        <path class="stroke" d="M8 52 L8 98 L60 98 L60 56 L32 56 L28 52 Z" fill="#000"/>
+        <text class="caption" x="34" y="110">assets/</text>
+
+        <!-- assets → manifest -->
+        <path class="flow" d="M62 75 L70 75"/>
+
+        <!-- ===== Manifest ===== -->
+        <text class="manifest" x="80" y="79">{ }</text>
+        <text class="caption" x="80" y="110">manifest</text>
+
+        <!-- manifest → terminal -->
+        <path class="flow" d="M90 75 L98 75"/>
+
+        <!-- ===== Fenêtre de terminal ===== -->
+        <rect class="stroke" x="100" y="22" width="172" height="80" rx="4"/>
+        <line class="stroke thin dim" x1="100" y1="32" x2="272" y2="32"/>
+        <circle cx="107" cy="27" r="1.6" fill="#ff5f56"/>
+        <circle cx="113" cy="27" r="1.6" fill="#ffbd2e"/>
+        <circle cx="119" cy="27" r="1.6" fill="#27c93f"/>
+
+        <!-- ligne 1 : $ ls -->
+        <text x="106" y="44"><tspan class="prompt">$</tspan> ls</text>
+        <rect class="cover c1" x="104" y="36" width="20" height="11"/>
+
+        <!-- ligne 2 : sortie de ls -->
+        <text class="out o2" x="106" y="54">about/ experiences/ projects/</text>
+
+        <!-- ligne 3 : $ cd proj → TAB → $ cd projects/ -->
+        <text class="before-tab" x="106" y="64"><tspan class="prompt">$</tspan> cd proj</text>
+        <text class="after-tab"  x="106" y="64"><tspan class="prompt">$</tspan> cd projects/</text>
+        <rect class="cover c3" x="104" y="56" width="42" height="11"/>
+        <text class="tab-key" x="150" y="64">[TAB]</text>
+
+        <!-- ligne 4 : $ cat new_project.txt -->
+        <text x="106" y="74"><tspan class="prompt">$</tspan> cat new_project.txt</text>
+        <rect class="cover c4" x="104" y="66" width="92" height="11"/>
+
+        <!-- sortie : le contenu du nouveau fichier -->
+        <line class="stroke thin out-line out o5" x1="106" y1="82" x2="190" y2="82"/>
+        <line class="stroke thin out-line out o6" x1="106" y1="89" x2="166" y2="89"/>
+
+        <!-- curseur -->
+        <rect class="cursor" x="106" y="93" width="4" height="6"/>
+    </svg>
+
+    <div class="label">
+        <span>add a .txt to assets/</span><span>manifest.json auto-built</span><span>TAB autocomplete</span><span>content online ✓</span>
+    </div>
+</div>
+
+</body>
+</html>
