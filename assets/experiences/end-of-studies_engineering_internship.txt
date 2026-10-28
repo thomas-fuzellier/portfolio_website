@@ -1,6 +1,5 @@
-
 <span class="white-color bold">Data Engineering / LLM Internship applied to Healthcare</span>
-<span class="light-blue-color bold">MEDAL Laboratory</span> <span class="light-blue-color">University of Madrid, Spain</span> May - December 2024 Laboratoire
+<span class="light-blue-color bold">MEDAL Laboratory</span> <span class="light-blue-color">University of Madrid, Spain</span> May - December 2024
 
 Project for automated analysis of clinical data using language models (LLM), aimed at structuring medical information from free text for analytical use:
 
