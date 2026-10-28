@@ -1,4 +1,3 @@
-
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 const promptElement = document.getElementById("prompt");
@@ -179,7 +178,8 @@ function fuzzyMatch(input, target) {
     return i === input.length;
 }
 
-function autocomplete(value) {
+/* Liste des complétions possibles pour la saisie en cours */
+function getMatches(value) {
     const parts = value.split(" ");
     const command = parts[0];
     const last = parts[parts.length - 1] || "";
@@ -204,12 +204,38 @@ function autocomplete(value) {
         matches = options.filter(opt => fuzzyMatch(last, opt));
     }
 
-    if (matches.length === 1) {
-        parts[parts.length - 1] = matches[0];
-        return parts.join(" ");
+    return { parts, matches };
+}
+
+/*
+ * Tab : complète la saisie.
+ * S'il y a plusieurs correspondances, chaque nouvel appui sur Tab affiche
+ * la suivante (Shift+Tab : la précédente), en boucle.
+ */
+let tabCycle = null; // { parts, matches, index, completed }
+
+function autocomplete(value, backwards = false) {
+    // Appui répété sur Tab : on passe à la correspondance suivante
+    if (tabCycle && value === tabCycle.completed) {
+        const count = tabCycle.matches.length;
+        tabCycle.index = (tabCycle.index + (backwards ? -1 : 1) + count) % count;
+    } else {
+        const { parts, matches } = getMatches(value);
+        if (matches.length === 0) {
+            tabCycle = null;
+            return value;
+        }
+        tabCycle = { parts, matches, index: backwards ? matches.length - 1 : 0 };
     }
 
-    return value;
+    const parts = [...tabCycle.parts];
+    parts[parts.length - 1] = tabCycle.matches[tabCycle.index];
+    tabCycle.completed = parts.join(" ");
+
+    // Une seule correspondance : rien à faire défiler
+    if (tabCycle.matches.length === 1) tabCycle = null;
+
+    return parts.join(" ");
 }
 
 /* ---------- Commandes ---------- */
@@ -255,8 +281,12 @@ input.addEventListener("keydown", function(e) {
 
     if (e.key === "Tab") {
         e.preventDefault();
-        input.value = autocomplete(input.value);
+        input.value = autocomplete(input.value, e.shiftKey);
+        return;
     }
+
+    // Toute autre touche (sauf Shift seul) arrête le défilement des complétions
+    if (e.key !== "Shift") tabCycle = null;
 });
 
 /* ---------- Démarrage ---------- */
