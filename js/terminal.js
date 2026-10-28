@@ -22,12 +22,23 @@ const help = `
 <span class="blue-color">cd ..</span> → go back<br>
 <span class="blue-color">cat [file]</span> → cat file (txt or pdf)<br>
 <span class="blue-color">pwd</span> → show current directory<br>
+<span class="blue-color">tree</span> → show the whole filesystem<br>
+<span class="blue-color">whoami</span> · <span class="blue-color">contact</span> · <span class="blue-color">cv</span> · <span class="blue-color">neofetch</span><br>
 <span class="blue-color">clear</span> → clear terminal<br>
+<span class="blue-color">↑ / ↓</span> → command history · <span class="blue-color">TAB</span> → autocomplete<br>
 
 <span class="tip">💡 Tip: click on folders and files, or use the shortcuts below.</span><br>
 `;
 
-const COMMANDS = ["ls", "cd", "pwd", "clear", "help", "cat"];
+const COMMANDS = ["ls", "cd", "pwd", "clear", "help", "cat", "tree", "whoami", "contact", "cv", "neofetch", "sudo"];
+
+/* Petite présentation affichée par "whoami" */
+const WHOAMI = `<span class="white-color bold">Thomas Fuzellier</span>
+ENSEA Engineer · Embedded Systems &amp; Software Developer
+⚙️ Embedded Systems | 📊 Data | 💻 Software | 🧠 LLM
+🟢 Open to Work
+
+→ <span class="blue-color clickable" data-cmd="cat /about/presentation.txt">cat presentation.txt</span> · <span class="blue-color clickable" data-cmd="contact">contact</span> · <span class="blue-color clickable" data-cmd="cv">cv</span>`;
 
 /* ---------- Chargement du système de fichiers ---------- */
 
@@ -45,14 +56,97 @@ async function loadFilesystem() {
 /* ---------- Affichage ---------- */
 
 function showBootScreen() {
-    output.innerHTML += banner + "<br><br>";
-    output.innerHTML += help + "<br>";
+    output.insertAdjacentHTML("beforeend", banner + "<br><br>" + help + "<br>");
     output.scrollTop = output.scrollHeight;
 }
 
+/* insertAdjacentHTML ajoute à la fin sans re-générer tout le terminal :
+   les animations (iframes) déjà affichées ne se rechargent pas à chaque commande. */
 function print(text) {
-    output.innerHTML += text + "<br>";
+    output.insertAdjacentHTML("beforeend", text + "<br>");
     output.scrollTop = output.scrollHeight;
+}
+
+/* ---------- Effet de frappe (sortie de cat) ---------- */
+
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* Appelée pour afficher immédiatement la fin du texte en cours de frappe */
+let finishTyping = null;
+
+/*
+ * Affiche du HTML caractère par caractère, comme dans un vrai terminal.
+ * La durée est fixe (~0,7 s) quelle que soit la longueur du texte.
+ * Une touche ou un clic pendant la frappe affiche tout d'un coup.
+ */
+function printTyped(html, duration = 700) {
+    const block = document.createElement("span");
+    block.innerHTML = html;
+
+    if (reducedMotion) {
+        output.appendChild(block);
+        print("");
+        return Promise.resolve();
+    }
+
+    // Les animations et images n'apparaissent qu'une fois le texte écrit
+    const media = block.querySelectorAll("iframe, img");
+    media.forEach(el => el.style.visibility = "hidden");
+
+    // On vide tous les noeuds texte, puis on les remplit petit à petit
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) {
+        nodes.push({ node: walker.currentNode, text: walker.currentNode.textContent });
+        walker.currentNode.textContent = "";
+    }
+
+    output.appendChild(block);
+
+    const total = nodes.reduce((sum, n) => sum + n.text.length, 0);
+    const perFrame = Math.max(1, Math.ceil(total / (duration / 16)));
+
+    return new Promise(resolve => {
+        let nodeIndex = 0;
+        let charIndex = 0;
+        let done = false;
+
+        function finish() {
+            if (done) return;
+            done = true;
+            nodes.forEach(n => n.node.textContent = n.text);
+            media.forEach(el => el.style.visibility = "");
+            finishTyping = null;
+            print("");
+            resolve();
+        }
+
+        function frame() {
+            if (done) return;
+            let budget = perFrame;
+
+            while (budget > 0 && nodeIndex < nodes.length) {
+                const current = nodes[nodeIndex];
+                const take = Math.min(budget, current.text.length - charIndex);
+                charIndex += take;
+                budget -= take;
+                current.node.textContent = current.text.slice(0, charIndex);
+
+                if (charIndex >= current.text.length) {
+                    nodeIndex++;
+                    charIndex = 0;
+                }
+            }
+
+            output.scrollTop = output.scrollHeight;
+
+            if (nodeIndex >= nodes.length) finish();
+            else requestAnimationFrame(frame);
+        }
+
+        finishTyping = finish;
+        requestAnimationFrame(frame);
+    });
 }
 
 /* ---------- Navigation ---------- */
@@ -168,7 +262,7 @@ async function openFile(name) {
     try {
         const response = await fetch(node.path);
         if (!response.ok) throw new Error(response.status);
-        print(await response.text());
+        await printTyped(await response.text());
     } catch (err) {
         print("Error loading file");
     }
@@ -247,12 +341,124 @@ function autocomplete(value, backwards = false) {
     return parts.join(" ");
 }
 
+/* ---------- Commandes supplémentaires ---------- */
+
+function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+}
+
+/* tree : toute l'arborescence, avec des entrées cliquables comme dans ls */
+function tree() {
+    const lines = ["<span class='dir'>~</span>"];
+
+    (function walk(node, prefix, path) {
+        const entries = Object.entries(node.children);
+        entries.forEach(([name, item], i) => {
+            const last = i === entries.length - 1;
+            const branch = prefix + (last ? "└── " : "├── ");
+            const full = `${path}/${name}`;
+
+            if (item.type === "dir") {
+                lines.push(`${branch}<span class="dir clickable" data-cmd="cd ${full}">${name}/</span>`);
+                walk(item, prefix + (last ? "    " : "│   "), full);
+            } else {
+                lines.push(`${branch}<span class="file clickable" data-cmd="cat ${full}">${name}</span>`);
+            }
+        });
+    })(filesystem, "", "");
+
+    print(lines.join("\n") + "\n");
+}
+
+/* neofetch : petite fiche système façon Linux, avec un logo ASCII (une puce) */
+function neofetch() {
+    const art = [
+        "   ┌┬┬┬┬┐   ",
+        " ──┤    ├── ",
+        " ──┤ TF ├── ",
+        " ──┤    ├── ",
+        "   └┴┴┴┴┘   "
+    ];
+
+    const info = [
+        "<span class='green-color bold'>thomas</span>@<span class='green-color bold'>portfolio</span>",
+        "----------------",
+        "<span class='blue-color'>OS</span>: Portfolio Linux x86_64",
+        "<span class='blue-color'>Shell</span>: terminal.js",
+        "<span class='blue-color'>Role</span>: Embedded Systems &amp; Software Engineer",
+        "<span class='blue-color'>School</span>: ENSEA (2024)",
+        "<span class='blue-color'>Focus</span>: Embedded · Data · LLM",
+        "<span class='blue-color'>Languages</span>: C/C++ · Python · Java · JS",
+        "<span class='blue-color'>Status</span>: 🟢 Open to Work",
+        "",
+        ["#ff5f56", "#f88d00", "#ffe600", "#3FB950", "#58A6FF", "#c678dd", "#919191"]
+            .map(c => `<span style="color:${c}">███</span>`).join("")
+    ];
+
+    const width = art[0].length;
+    const lines = info.map((text, i) =>
+        `<span class="green-color">${(art[i] || "").padEnd(width)}</span>  ${text}`
+    );
+
+    print(lines.join("\n") + "\n");
+}
+
+/* sudo : easter egg pour les recruteurs */
+async function sudo(arg) {
+    if (!/^hire[- ]?me$/i.test(arg)) {
+        print("<span class='orange-color'>Nice try 😉</span> — this incident will be reported.\n" +
+              "Hint: try <span class='blue-color clickable' data-cmd='sudo hire-me'>sudo hire-me</span>\n");
+        return;
+    }
+
+    await printTyped(
+`[sudo] password for recruiter: ********
+<span class="green-color">✔ Access granted.</span>
+
+Initiating hiring protocol...
+<span class="green-color">[████████████████] 100%</span>
+
+<span class="white-color bold">Great choice! Let's talk 👇</span>
+📧 <a href="mailto:thomas.fuzellier@outlook.fr" class="link">thomas.fuzellier@outlook.fr</a>
+💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier</a>
+📄 <span class="yellow-color clickable" data-cmd="cv">open my CV</span>
+`, 1200);
+}
+
+/* ---------- Historique des commandes (↑ / ↓) ---------- */
+
+const commandHistory = [];
+let historyIndex = 0;     // position dans l'historique pendant la navigation
+let historyDraft = "";    // saisie en cours, retrouvée en redescendant tout en bas
+
+function addToHistory(cmd) {
+    if (commandHistory[commandHistory.length - 1] !== cmd) commandHistory.push(cmd);
+    historyIndex = commandHistory.length;
+}
+
+function browseHistory(direction) {
+    if (commandHistory.length === 0) return;
+
+    if (historyIndex === commandHistory.length) historyDraft = input.value;
+
+    historyIndex = Math.min(commandHistory.length, Math.max(0, historyIndex + direction));
+    input.value = historyIndex === commandHistory.length
+        ? historyDraft
+        : commandHistory[historyIndex];
+
+    // Curseur à la fin de la ligne
+    requestAnimationFrame(() => input.setSelectionRange(input.value.length, input.value.length));
+}
+
 /* ---------- Commandes ---------- */
 
 async function handleCommand(cmd) {
     if (!cmd) return;
 
-    print(`<span class="prompt">${promptElement.textContent}</span> ${cmd}`);
+    addToHistory(cmd);
+    print(`<span class="prompt">${promptElement.textContent}</span> ${escapeHtml(cmd)}`);
 
     const [command, ...args] = cmd.split(/\s+/);
     const arg = args.join(" ");
@@ -274,8 +480,29 @@ async function handleCommand(cmd) {
         case "cat":
             await openFile(arg);
             return;
+        case "tree":
+            tree();
+            return;
+        case "whoami":
+            print(WHOAMI + "\n");
+            return;
+        case "contact":
+            await openFile("/about/contact.txt");
+            return;
+        case "cv": {
+            const cv = findCv();
+            if (cv) await openFile(cv);
+            else print("cv: CV not found in /about");
+            return;
+        }
+        case "neofetch":
+            neofetch();
+            return;
+        case "sudo":
+            await sudo(arg);
+            return;
         case "help":
-            print("Commands: <span class='blue-color'>ls</span>, <span class='blue-color'>cd</span>, <span class='blue-color'>pwd</span>, <span class='blue-color'>cat</span>, <span class='blue-color'>clear</span>");
+            print(help);
             return;
     }
 
@@ -301,6 +528,9 @@ function runCommands(...cmds) {
 
 /* Clic sur une entrée de ls (ou tout élément avec data-cmd) dans la sortie */
 output.addEventListener("click", function(e) {
+    // Un clic pendant l'effet de frappe affiche tout le texte d'un coup
+    if (finishTyping) finishTyping();
+
     const target = e.target.closest("[data-cmd]");
     if (target) runCommands(target.dataset.cmd);
 });
@@ -340,9 +570,19 @@ function buildShortcuts() {
 }
 
 input.addEventListener("keydown", function(e) {
+    // Une touche pendant l'effet de frappe affiche tout le texte d'un coup
+    if (finishTyping) finishTyping();
+
     if (e.key === "Enter") {
         runCommands(input.value.trim());
         input.value = "";
+        historyDraft = "";
+    }
+
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+        browseHistory(e.key === "ArrowUp" ? -1 : 1);
+        return;
     }
 
     if (e.key === "Tab") {
