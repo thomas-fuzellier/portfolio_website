@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+  Modèle de l'image d'aperçu (og-image.png, 1200 × 630) affichée quand on partage
+  le lien du site sur LinkedIn, par mail, WhatsApp…
+  Pour la régénérer : ouvrir ce fichier dans un navigateur à 1200 × 630 et faire une capture,
+  ou demander à Claude.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        width: 1200px;
+        height: 630px;
+        background: #000000;
+        font-family: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
+        color: #919191;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .window {
+        width: 1080px;
+        height: 510px;
+        border: 2px solid #30363d;
+        border-radius: 18px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bar {
+        height: 48px;
+        border-bottom: 2px solid #30363d;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 22px;
+    }
+
+    .dot { width: 16px; height: 16px; border-radius: 50%; }
+
+    .bar span.title {
+        margin-left: 18px;
+        font-size: 20px;
+        color: #6e7681;
+    }
+
+    .content {
+        flex: 1;
+        padding: 46px 56px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .cmd { font-size: 28px; }
+    .prompt { color: #3FB950; }
+
+    h1 {
+        font-size: 72px;
+        color: #ffffff;
+        font-weight: bold;
+        letter-spacing: -1px;
+        margin-top: 8px;
+    }
+
+    .role { font-size: 28px; color: #c9d1d9; white-space: nowrap; }
+
+    .tags { font-size: 28px; margin-top: 6px; }
+    .tags .t1 { color: #58A6FF; }
+    .tags .t2 { color: #ffe600; }
+    .tags .t3 { color: #f88d00; }
+    .tags .t4 { color: #3FB950; }
+
+    .cursor {
+        display: inline-block;
+        width: 16px;
+        height: 30px;
+        background: #919191;
+        vertical-align: -5px;
+        margin-left: 8px;
+    }
+
+    .footer {
+        margin-top: auto;
+        font-size: 24px;
+        color: #6e7681;
+    }
+</style>
+</head>
+<body>
+    <div class="window">
+        <div class="bar">
+            <div class="dot" style="background:#ff5f56"></div>
+            <div class="dot" style="background:#ffbd2e"></div>
+            <div class="dot" style="background:#27c93f"></div>
+            <span class="title">thomas@portfolio: ~</span>
+        </div>
+        <div class="content">
+            <div class="cmd"><span class="prompt">thomas@portfolio:~$</span> whoami</div>
+            <h1>Thomas Fuzellier</h1>
+            <div class="role">ENSEA Engineer · Embedded Systems &amp; Software Developer</div>
+            <div class="tags">
+                <span class="t1">⚙ Embedded</span> · <span class="t2">Data</span> · <span class="t3">Software</span> · <span class="t4">LLM</span>
+            </div>
+            <div class="footer"><span class="prompt">$</span> explore my interactive terminal portfolio<span class="cursor"></span></div>
+        </div>
+    </div>
+</body>
+</html>

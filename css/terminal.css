@@ -344,3 +344,16 @@ body {
         padding: 0 10px;
     }
 }
+
+/* Contenu réservé à Google et aux lecteurs d'écran : présent dans la page mais invisible */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
