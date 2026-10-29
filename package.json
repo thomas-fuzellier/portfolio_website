@@ -4,7 +4,7 @@
   "private": true,
   "description": "Terminal-style portfolio website",
   "scripts": {
-    "build": "node scripts/build-manifest.js",
-    "dev": "node scripts/build-manifest.js && npx --yes serve ."
+    "build": "node scripts/build-manifest.js && node scripts/build-seo.js",
+    "dev": "npm run build && npx --yes serve ."
   }
 }
