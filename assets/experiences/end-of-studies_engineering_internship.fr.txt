@@ -1,0 +1,16 @@
+<span class="white-color bold">Stage Data Engineering / LLM appliqué à la santé</span>
+<span class="light-blue-color bold">Laboratoire MEDAL</span> <span class="light-blue-color">Université de Madrid, Espagne</span> Mai - Décembre 2024
+
+Projet d'analyse automatisée de données cliniques à l'aide de modèles de langage (LLM), visant à structurer l'information médicale issue de texte libre pour son exploitation analytique :
+
+-Conception et développement d'un pipeline NLP de bout en bout pour l'analyse de données cliniques avec des LLM
+-Extraction, normalisation et structuration de données médicales non structurées
+-Orchestration des appels aux LLM via une API REST
+-Benchmark et évaluation de modèles sur des données médicales
+-Industrialisation du pipeline : modularisation, tests unitaires, documentation technique
+<a href="assets/experiences/_reports/Rapport_de_Stage_FUZELLIER_Thomas_Derniere_Annee.pdf"
+   target="_blank"
+   class="report-link">
+[rapport de stage]
+</a>
+<iframe class="anim-frame" src="animations/clinical-llm-pipeline.html" title="Animation du pipeline LLM clinique" loading="lazy"></iframe>

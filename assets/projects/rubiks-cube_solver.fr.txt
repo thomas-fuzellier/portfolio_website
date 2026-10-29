@@ -1,0 +1,15 @@
+<span class="white-color bold">Projet académique – Système embarqué de résolution automatique du Rubik’s Cube</span>
+<span class="light-blue-color bold">ENSEA</span> <span class="light-blue-color">Cergy, France</span> 2023
+
+Conception et développement d'un système embarqué capable de résoudre automatiquement un Rubik’s Cube, alliant algorithmique, électronique et commande de moteurs :
+
+-Implémentation d'un algorithme de résolution du Rubik’s Cube en C
+-Programmation d'un microcontrôleur pour piloter des moteurs pas à pas et exécuter les séquences de résolution
+-Conception d'un PCB sur mesure intégrant les drivers moteurs et un module de communication Bluetooth
+-Développement d'une connexion sans fil avec un smartphone pour le suivi et le contrôle à distance du système
+<a href="https://github.com/thomas-fuzellier/Rubiks-Cube_Project"
+   target="_blank"
+   class="report-link">
+[projet github]
+</a>
+<iframe class="anim-frame" src="animations/rubiks-cube-solver.html" title="Animation du robot Rubik's Cube" loading="lazy"></iframe>

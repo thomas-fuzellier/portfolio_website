@@ -1,0 +1,29 @@
+drwxr-xr-x <span class="light-green-color bold">Résolution de problèmes/</span>
+-rw-r--r-- <span class="orange-color">Résolution de problèmes</span>
+-rw-r--r-- <span class="orange-color">Esprit critique</span>
+-rw-r--r-- <span class="orange-color">Esprit d'analyse</span>
+-rw-r--r-- <span class="orange-color">Créativité dans la recherche de solutions</span>
+
+drwxr-xr-x <span class="light-green-color bold">Éthique de travail/</span>
+-rw-r--r-- <span class="orange-color">Autonomie</span>
+-rw-r--r-- <span class="orange-color">Esprit d'initiative en équipe</span>
+-rw-r--r-- <span class="orange-color">Sens des responsabilités & fiabilité</span>
+-rw-r--r-- <span class="orange-color">Résistance à la pression</span>
+
+drwxr-xr-x <span class="light-green-color bold">Équipe & leadership/</span>
+-rw-r--r-- <span class="orange-color">Travail en équipe & collaboration</span>
+-rw-r--r-- <span class="orange-color">Leadership sur les projets d'équipe</span>
+-rw-r--r-- <span class="orange-color">Communication (technique & non technique)</span>
+
+drwxr-xr-x <span class="light-green-color bold">Apprentissage & adaptabilité/</span>
+-rw-r--r-- <span class="orange-color">Capacité d'apprentissage rapide</span>
+-rw-r--r-- <span class="orange-color">Curiosité & apprentissage continu</span>
+-rw-r--r-- <span class="orange-color">Adaptabilité</span>
+
+drwxr-xr-x <span class="light-green-color bold">Organisation/</span>
+-rw-r--r-- <span class="orange-color">Gestion du temps</span>
+-rw-r--r-- <span class="orange-color">Organisation & priorisation</span>
+-rw-r--r-- <span class="orange-color">Rigueur & souci du détail</span>
+
+drwxr-xr-x <span class="light-green-color bold">Prise de décision/</span>
+-rw-r--r-- <span class="orange-color">Prise de décision</span>

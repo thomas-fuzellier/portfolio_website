@@ -62,6 +62,7 @@ The terminal's file system mirrors the `assets/` folder: each sub-folder becomes
 
 Rules:
 - Only `.txt` and `.pdf` files are shown (images and other files are ignored).
+- French translation: put `my_file.fr.txt` next to `my_file.txt`. It is not listed separately; the terminal shows it when the language is French (`lang fr` or the FR button). Without a `.fr.txt`, the English file is shown.
 - Files and folders starting with `_` are hidden from `ls` but stay reachable by URL — useful for attachments linked from a `.txt` (e.g. `assets/experiences/_reports/`).
 - `.txt` files can contain HTML (`<span class="...">`, `<a href="...">`) for colors and links.
 

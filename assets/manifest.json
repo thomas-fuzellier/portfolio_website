@@ -4,7 +4,10 @@
     "children": {
       "contact.txt": {
         "type": "file",
-        "path": "assets/about/contact.txt"
+        "path": "assets/about/contact.txt",
+        "translations": {
+          "fr": "assets/about/contact.fr.txt"
+        }
       },
       "CV_FUZELLIER_Thomas.pdf": {
         "type": "file",
@@ -12,11 +15,17 @@
       },
       "education.txt": {
         "type": "file",
-        "path": "assets/about/education.txt"
+        "path": "assets/about/education.txt",
+        "translations": {
+          "fr": "assets/about/education.fr.txt"
+        }
       },
       "presentation.txt": {
         "type": "file",
-        "path": "assets/about/presentation.txt"
+        "path": "assets/about/presentation.txt",
+        "translations": {
+          "fr": "assets/about/presentation.fr.txt"
+        }
       }
     }
   },
@@ -25,19 +34,31 @@
     "children": {
       "end-of-studies_engineering_internship.txt": {
         "type": "file",
-        "path": "assets/experiences/end-of-studies_engineering_internship.txt"
+        "path": "assets/experiences/end-of-studies_engineering_internship.txt",
+        "translations": {
+          "fr": "assets/experiences/end-of-studies_engineering_internship.fr.txt"
+        }
       },
       "first_job.txt": {
         "type": "file",
-        "path": "assets/experiences/first_job.txt"
+        "path": "assets/experiences/first_job.txt",
+        "translations": {
+          "fr": "assets/experiences/first_job.fr.txt"
+        }
       },
       "second_job.txt": {
         "type": "file",
-        "path": "assets/experiences/second_job.txt"
+        "path": "assets/experiences/second_job.txt",
+        "translations": {
+          "fr": "assets/experiences/second_job.fr.txt"
+        }
       },
       "second_year_internship.txt": {
         "type": "file",
-        "path": "assets/experiences/second_year_internship.txt"
+        "path": "assets/experiences/second_year_internship.txt",
+        "translations": {
+          "fr": "assets/experiences/second_year_internship.fr.txt"
+        }
       }
     }
   },
@@ -46,19 +67,31 @@
     "children": {
       "ai_job_application_generator.txt": {
         "type": "file",
-        "path": "assets/projects/ai_job_application_generator.txt"
+        "path": "assets/projects/ai_job_application_generator.txt",
+        "translations": {
+          "fr": "assets/projects/ai_job_application_generator.fr.txt"
+        }
       },
       "pokemon_game.txt": {
         "type": "file",
-        "path": "assets/projects/pokemon_game.txt"
+        "path": "assets/projects/pokemon_game.txt",
+        "translations": {
+          "fr": "assets/projects/pokemon_game.fr.txt"
+        }
       },
       "portfolio_website.txt": {
         "type": "file",
-        "path": "assets/projects/portfolio_website.txt"
+        "path": "assets/projects/portfolio_website.txt",
+        "translations": {
+          "fr": "assets/projects/portfolio_website.fr.txt"
+        }
       },
       "rubiks-cube_solver.txt": {
         "type": "file",
-        "path": "assets/projects/rubiks-cube_solver.txt"
+        "path": "assets/projects/rubiks-cube_solver.txt",
+        "translations": {
+          "fr": "assets/projects/rubiks-cube_solver.fr.txt"
+        }
       }
     }
   },
@@ -67,11 +100,17 @@
     "children": {
       "hard_skills.txt": {
         "type": "file",
-        "path": "assets/skills/hard_skills.txt"
+        "path": "assets/skills/hard_skills.txt",
+        "translations": {
+          "fr": "assets/skills/hard_skills.fr.txt"
+        }
       },
       "soft_skills.txt": {
         "type": "file",
-        "path": "assets/skills/soft_skills.txt"
+        "path": "assets/skills/soft_skills.txt",
+        "translations": {
+          "fr": "assets/skills/soft_skills.fr.txt"
+        }
       }
     }
   }

@@ -7,14 +7,27 @@ let filesystem = { type: "dir", children: {} };
 
 let currentPath = ["/"];
 
-const banner = `
+const COMMANDS = ["ls", "cd", "pwd", "clear", "help", "cat", "tree", "whoami", "contact", "cv", "neofetch", "sudo", "lang"];
+
+/* ---------- Langues : anglais (par défaut) et français ---------- */
+/*
+ * Tous les textes de l'interface sont ici, dans les deux langues.
+ * Le contenu (expériences, projets…) est dans assets/ : "fichier.fr.txt" est
+ * la version française de "fichier.txt" (si elle manque, on affiche l'anglais).
+ */
+const LANGS = ["en", "fr"];
+const DEFAULT_LANG = "en";
+const LANG_STORAGE_KEY = "portfolio-lang";
+
+const I18N = {
+    en: {
+        banner: `
 <span class="title">Fuzellier Thomas</span><br>
 <span class="sub-title"><p>ENSEA Engineer · Embedded Systems & Software Developer</p>
 <p>📧 thomas.fuzellier@outlook.fr · 📞 +33 6 10 48 41 37</p>
-<p>⚙️ Computer Science & Embedded Systems  | 📊 Data | 💻 Software development | 🧠 LLM | 🟢 Open to Work</p>
-</span>`;
-
-const help = `
+<p>⚙️ Computer Science & Embedded Systems  | 📊 Data | 💻 Software development | 🧠 LLM | 🟢 Open to opportunities</p>
+</span>`,
+        help: `
 <span class="available">Available commands:</span><br>
 
 <span class="blue-color">ls</span> → list files & directories<br>
@@ -24,21 +37,139 @@ const help = `
 <span class="blue-color">pwd</span> → show current directory<br>
 <span class="blue-color">tree</span> → show the whole filesystem<br>
 <span class="blue-color">whoami</span> · <span class="blue-color">contact</span> · <span class="blue-color">cv</span> · <span class="blue-color">neofetch</span><br>
+<span class="blue-color">lang fr</span> → <span class="clickable blue-color" data-cmd="lang fr">version française</span><br>
 <span class="blue-color">clear</span> → clear terminal<br>
 <span class="blue-color">↑ / ↓</span> → command history · <span class="blue-color">TAB</span> → autocomplete<br>
 
 <span class="tip">💡 Tip: click on folders and files, or use the shortcuts below.</span><br>
-`;
-
-const COMMANDS = ["ls", "cd", "pwd", "clear", "help", "cat", "tree", "whoami", "contact", "cv", "neofetch", "sudo"];
-
-/* Petite présentation affichée par "whoami" */
-const WHOAMI = `<span class="white-color bold">Thomas Fuzellier</span>
+`,
+        whoami: `<span class="white-color bold">Thomas Fuzellier</span>
 ENSEA Engineer · Embedded Systems &amp; Software Developer
 ⚙️ Embedded Systems | 📊 Data | 💻 Software | 🧠 LLM
-🟢 Open to Work
+🟢 Open to opportunities
 
-→ <span class="blue-color clickable" data-cmd="cat /about/presentation.txt">cat presentation.txt</span> · <span class="blue-color clickable" data-cmd="contact">contact</span> · <span class="blue-color clickable" data-cmd="cv">cv</span>`;
+→ <span class="blue-color clickable" data-cmd="cat /about/presentation.txt">cat presentation.txt</span> · <span class="blue-color clickable" data-cmd="contact">contact</span> · <span class="blue-color clickable" data-cmd="cv">cv</span>`,
+        neofetch: {
+            os: "OS", shell: "Shell", role: "Role", school: "School", focus: "Focus",
+            languages: "Languages", status: "Status",
+            roleValue: "Embedded Systems &amp; Software Engineer",
+            statusValue: "🟢 Open to opportunities"
+        },
+        sudoDenied: `<span class='orange-color'>Nice try 😉</span> — this incident will be reported.
+Hint: try <span class='blue-color clickable' data-cmd='sudo hire-me'>sudo hire-me</span>
+`,
+        sudoHire: `[sudo] password for recruiter: ********
+<span class="green-color">✔ Access granted.</span>
+
+Initiating hiring protocol...
+<span class="green-color">[████████████████] 100%</span>
+
+<span class="white-color bold">Great choice! Let's talk 👇</span>
+📧 <a href="mailto:thomas.fuzellier@outlook.fr" class="link">thomas.fuzellier@outlook.fr</a>
+💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier</a>
+📄 <span class="yellow-color clickable" data-cmd="cv">open my CV</span>
+`,
+        manifestError: "<span class='orange-color'>Could not load the filesystem (assets/manifest.json).</span>",
+        manifestHint: "Run <span class='blue-color'>node scripts/build-manifest.js</span> then reload the page.",
+        noSuchDir: "cd: no such directory",
+        missingArg: "cat: missing argument",
+        fileNotFound: "File not found",
+        isDirectory: name => `cat: ${name}: Is a directory`,
+        loadError: "Error loading file",
+        cvNotFound: "cv: CV not found in /about",
+        notFound: "Command not found : <span class='blue-color'>help</span> for all commands",
+        langCurrent: "Current language: English. Use <span class='blue-color clickable' data-cmd='lang fr'>lang fr</span> for French.",
+        langUnknown: "lang: unknown language. Available: <span class='blue-color'>en</span>, <span class='blue-color'>fr</span>",
+        langSwitched: "🌐 Language set to English.",
+        langButton: { label: "FR", title: "Version française", cmd: "lang fr" }
+    },
+
+    fr: {
+        banner: `
+<span class="title">Fuzellier Thomas</span><br>
+<span class="sub-title"><p>Ingénieur ENSEA · Systèmes embarqués & développement logiciel</p>
+<p>📧 thomas.fuzellier@outlook.fr · 📞 +33 6 10 48 41 37</p>
+<p>⚙️ Informatique & systèmes embarqués  | 📊 Data | 💻 Développement logiciel | 🧠 LLM | 🟢 Ouvert aux opportunités</p>
+</span>`,
+        help: `
+<span class="available">Commandes disponibles :</span><br>
+
+<span class="blue-color">ls</span> → lister les fichiers et dossiers<br>
+<span class="blue-color">cd [dossier]</span> → entrer dans un dossier<br>
+<span class="blue-color">cd ..</span> → revenir en arrière<br>
+<span class="blue-color">cat [fichier]</span> → afficher un fichier (txt ou pdf)<br>
+<span class="blue-color">pwd</span> → afficher le dossier courant<br>
+<span class="blue-color">tree</span> → afficher toute l'arborescence<br>
+<span class="blue-color">whoami</span> · <span class="blue-color">contact</span> · <span class="blue-color">cv</span> · <span class="blue-color">neofetch</span><br>
+<span class="blue-color">lang en</span> → <span class="clickable blue-color" data-cmd="lang en">English version</span><br>
+<span class="blue-color">clear</span> → effacer le terminal<br>
+<span class="blue-color">↑ / ↓</span> → historique des commandes · <span class="blue-color">TAB</span> → autocomplétion<br>
+
+<span class="tip">💡 Astuce : cliquez sur les dossiers et les fichiers, ou utilisez les raccourcis ci-dessous.</span><br>
+`,
+        whoami: `<span class="white-color bold">Thomas Fuzellier</span>
+Ingénieur ENSEA · Systèmes embarqués &amp; développement logiciel
+⚙️ Systèmes embarqués | 📊 Data | 💻 Logiciel | 🧠 LLM
+🟢 Ouvert aux opportunités
+
+→ <span class="blue-color clickable" data-cmd="cat /about/presentation.txt">cat presentation.txt</span> · <span class="blue-color clickable" data-cmd="contact">contact</span> · <span class="blue-color clickable" data-cmd="cv">cv</span>`,
+        neofetch: {
+            os: "OS", shell: "Shell", role: "Poste", school: "École", focus: "Domaines",
+            languages: "Langages", status: "Statut",
+            roleValue: "Ingénieur systèmes embarqués &amp; logiciel",
+            statusValue: "🟢 Ouvert aux opportunités"
+        },
+        sudoDenied: `<span class='orange-color'>Bien essayé 😉</span> — cet incident sera signalé.
+Indice : essayez <span class='blue-color clickable' data-cmd='sudo hire-me'>sudo hire-me</span>
+`,
+        sudoHire: `[sudo] mot de passe pour recruteur : ********
+<span class="green-color">✔ Accès autorisé.</span>
+
+Lancement du protocole de recrutement...
+<span class="green-color">[████████████████] 100%</span>
+
+<span class="white-color bold">Excellent choix ! Parlons-en 👇</span>
+📧 <a href="mailto:thomas.fuzellier@outlook.fr" class="link">thomas.fuzellier@outlook.fr</a>
+💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier</a>
+📄 <span class="yellow-color clickable" data-cmd="cv">ouvrir mon CV</span>
+`,
+        manifestError: "<span class='orange-color'>Impossible de charger le système de fichiers (assets/manifest.json).</span>",
+        manifestHint: "Lancez <span class='blue-color'>node scripts/build-manifest.js</span> puis rechargez la page.",
+        noSuchDir: "cd: dossier introuvable",
+        missingArg: "cat: argument manquant",
+        fileNotFound: "Fichier introuvable",
+        isDirectory: name => `cat: ${name}: est un dossier`,
+        loadError: "Erreur lors du chargement du fichier",
+        cvNotFound: "cv: CV introuvable dans /about",
+        notFound: "Commande inconnue : <span class='blue-color'>help</span> pour la liste des commandes",
+        langCurrent: "Langue actuelle : français. Tapez <span class='blue-color clickable' data-cmd='lang en'>lang en</span> pour l'anglais.",
+        langUnknown: "lang: langue inconnue. Disponibles : <span class='blue-color'>en</span>, <span class='blue-color'>fr</span>",
+        langSwitched: "🌐 Langue : français.",
+        langButton: { label: "EN", title: "English version", cmd: "lang en" }
+    }
+};
+
+/* Langue enregistrée dans le navigateur (si possible), sinon anglais */
+function loadLang() {
+    try {
+        const saved = localStorage.getItem(LANG_STORAGE_KEY);
+        if (LANGS.includes(saved)) return saved;
+    } catch (err) { /* stockage indisponible (navigation privée…) */ }
+    return DEFAULT_LANG;
+}
+
+let lang = loadLang();
+document.documentElement.lang = lang;
+
+function t(key) {
+    return I18N[lang][key];
+}
+
+function setLang(newLang) {
+    lang = newLang;
+    document.documentElement.lang = lang;
+    try { localStorage.setItem(LANG_STORAGE_KEY, lang); } catch (err) { /* ignoré */ }
+}
 
 /* ---------- Chargement du système de fichiers ---------- */
 
@@ -48,15 +179,15 @@ async function loadFilesystem() {
         if (!response.ok) throw new Error(response.status);
         filesystem = { type: "dir", children: await response.json() };
     } catch (err) {
-        print("<span class='orange-color'>Could not load the filesystem (assets/manifest.json).</span>");
-        print("Run <span class='blue-color'>node scripts/build-manifest.js</span> then reload the page.");
+        print(t("manifestError"));
+        print(t("manifestHint"));
     }
 }
 
 /* ---------- Affichage ---------- */
 
 function showBootScreen() {
-    output.insertAdjacentHTML("beforeend", banner + "<br><br>" + help + "<br>");
+    output.insertAdjacentHTML("beforeend", t("banner") + "<br><br>" + t("help") + "<br>");
     output.scrollTop = output.scrollHeight;
 }
 
@@ -230,25 +361,25 @@ function cd(folder) {
         updatePrompt();
         print("");
     } else {
-        print("cd: no such directory" + "<br>");
+        print(t("noSuchDir") + "<br>");
     }
 }
 
 async function openFile(name) {
     if (!name) {
-        print("cat: missing argument");
+        print(t("missingArg"));
         return;
     }
 
     const node = nodeAt(resolvePath(name));
 
     if (!node) {
-        print("File not found");
+        print(t("fileNotFound"));
         return;
     }
 
     if (node.type === "dir") {
-        print(`cat: ${name}: Is a directory`);
+        print(t("isDirectory")(escapeHtml(name)));
         return;
     }
 
@@ -258,13 +389,15 @@ async function openFile(name) {
         return;
     }
 
-    /* TEXT */
+    /* TEXT : version traduite si elle existe ("fichier.fr.txt"), sinon l'original */
+    const textPath = (node.translations && node.translations[lang]) || node.path;
+
     try {
-        const response = await fetch(node.path);
+        const response = await fetch(textPath);
         if (!response.ok) throw new Error(response.status);
         await printTyped(await response.text());
     } catch (err) {
-        print("Error loading file");
+        print(t("loadError"));
     }
 }
 
@@ -295,6 +428,8 @@ function getMatches(value) {
         options = Object.keys(getNode()).filter(name => getNode()[name].type === "dir");
     } else if (command === "cat") {
         options = Object.keys(getNode());
+    } else if (command === "lang") {
+        options = LANGS;
     }
 
     const normalizedLast = last.toLowerCase();
@@ -382,16 +517,17 @@ function neofetch() {
         "   └┴┴┴┴┘   "
     ];
 
+    const L = t("neofetch");
     const info = [
         "<span class='green-color bold'>thomas</span>@<span class='green-color bold'>portfolio</span>",
         "----------------",
-        "<span class='blue-color'>OS</span>: Portfolio Linux x86_64",
-        "<span class='blue-color'>Shell</span>: terminal.js",
-        "<span class='blue-color'>Role</span>: Embedded Systems &amp; Software Engineer",
-        "<span class='blue-color'>School</span>: ENSEA (2024)",
-        "<span class='blue-color'>Focus</span>: Embedded · Data · LLM",
-        "<span class='blue-color'>Languages</span>: C/C++ · Python · Java · JS",
-        "<span class='blue-color'>Status</span>: 🟢 Open to Work",
+        `<span class='blue-color'>${L.os}</span>: Portfolio Linux x86_64`,
+        `<span class='blue-color'>${L.shell}</span>: terminal.js`,
+        `<span class='blue-color'>${L.role}</span>: ${L.roleValue}`,
+        `<span class='blue-color'>${L.school}</span>: ENSEA (2024)`,
+        `<span class='blue-color'>${L.focus}</span>: Embedded · Data · LLM`,
+        `<span class='blue-color'>${L.languages}</span>: C/C++ · Python · Java · JS`,
+        `<span class='blue-color'>${L.status}</span>: ${L.statusValue}`,
         "",
         ["#ff5f56", "#f88d00", "#ffe600", "#3FB950", "#58A6FF", "#c678dd", "#919191"]
             .map(c => `<span style="color:${c}">███</span>`).join("")
@@ -408,23 +544,33 @@ function neofetch() {
 /* sudo : easter egg pour les recruteurs */
 async function sudo(arg) {
     if (!/^hire[- ]?me$/i.test(arg)) {
-        print("<span class='orange-color'>Nice try 😉</span> — this incident will be reported.\n" +
-              "Hint: try <span class='blue-color clickable' data-cmd='sudo hire-me'>sudo hire-me</span>\n");
+        print(t("sudoDenied"));
         return;
     }
 
-    await printTyped(
-`[sudo] password for recruiter: ********
-<span class="green-color">✔ Access granted.</span>
+    await printTyped(t("sudoHire"), 1200);
+}
 
-Initiating hiring protocol...
-<span class="green-color">[████████████████] 100%</span>
+/* lang : passer de l'anglais au français (et inversement) */
+function changeLang(arg) {
+    if (!arg) {
+        print(t("langCurrent") + "\n");
+        return;
+    }
 
-<span class="white-color bold">Great choice! Let's talk 👇</span>
-📧 <a href="mailto:thomas.fuzellier@outlook.fr" class="link">thomas.fuzellier@outlook.fr</a>
-💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier</a>
-📄 <span class="yellow-color clickable" data-cmd="cv">open my CV</span>
-`, 1200);
+    const wanted = arg.toLowerCase();
+    if (!LANGS.includes(wanted)) {
+        print(t("langUnknown") + "\n");
+        return;
+    }
+
+    setLang(wanted);
+    buildShortcuts();
+
+    // On repart d'un terminal propre, dans la nouvelle langue
+    output.innerHTML = "";
+    showBootScreen();
+    print(t("langSwitched") + "\n");
 }
 
 /* ---------- Historique des commandes (↑ / ↓) ---------- */
@@ -484,7 +630,7 @@ async function handleCommand(cmd) {
             tree();
             return;
         case "whoami":
-            print(WHOAMI + "\n");
+            print(t("whoami") + "\n");
             return;
         case "contact":
             await openFile("/about/contact.txt");
@@ -492,7 +638,7 @@ async function handleCommand(cmd) {
         case "cv": {
             const cv = findCv();
             if (cv) await openFile(cv);
-            else print("cv: CV not found in /about");
+            else print(t("cvNotFound"));
             return;
         }
         case "neofetch":
@@ -501,12 +647,15 @@ async function handleCommand(cmd) {
         case "sudo":
             await sudo(arg);
             return;
+        case "lang":
+            changeLang(arg);
+            return;
         case "help":
-            print(help);
+            print(t("help"));
             return;
     }
 
-    print("Command not found : <span class='blue-color'>help</span> for all commands");
+    print(t("notFound"));
 }
 
 /* ---------- Commandes lancées au clic ---------- */
@@ -558,11 +707,16 @@ function buildShortcuts() {
 
     shortcuts.push({ label: "clear", cmds: ["clear"], className: "muted" });
 
+    // Bouton de langue : propose l'autre langue
+    const langButton = t("langButton");
+    shortcuts.push({ label: langButton.label, title: langButton.title, cmds: [langButton.cmd], className: "lang" });
+
     bar.innerHTML = "";
-    shortcuts.forEach(({ label, cmds, className }) => {
+    shortcuts.forEach(({ label, title, cmds, className }) => {
         const button = document.createElement("button");
         button.type = "button";
         button.textContent = label;
+        if (title) button.title = title;
         if (className) button.classList.add(className);
         button.addEventListener("click", () => runCommands(...cmds));
         bar.appendChild(button);

@@ -1,0 +1,27 @@
+<span class="white-color bold">Présentation</span>
+Thomas Fuzellier, ingénieur diplômé de l'ENSEA, spécialité Informatique et Systèmes, promotion 2024.
+
+🧠 Comment je me définis ?
+Comme un ingénieur curieux et créatif, qui a toujours aimé comprendre comment les choses fonctionnent et trouver des solutions concrètes aux défis techniques.
+
+💡 Qui je suis :
+J'ai toujours été attiré par les sciences, avec une nette préférence pour l'informatique. Très tôt, j'ai aimé créer de petits programmes, comprendre le fonctionnement des machines et apprendre les langages qui les font tourner.
+Ce plaisir de coder, d'apprendre en faisant et de résoudre des problèmes concrets ne m'a jamais quitté. Aujourd'hui encore, je retrouve la même satisfaction à développer des outils, explorer de nouveaux algorithmes ou concevoir des systèmes intelligents et utiles.
+
+🔧 Ce que je fais :
+Je mets mes compétences au service de projets techniques ambitieux :
+
+-Analyse de données et NLP avec des LLM
+-Systèmes embarqués et électronique
+-Développement logiciel en Python, C++, Java
+-Prototypage mécanique et CAO
+
+Avec une attention particulière à la qualité, à l'autonomie… et une bonne dose de curiosité.
+
+🔍 Ce en quoi je crois :
+
+-« Comprendre avant de coder, toujours. »
+-« Un bon outil, c'est un outil qu'on a plaisir à réutiliser. »
+-« L'innovation vient de ceux qui posent les bonnes questions. »
+-« Un problème bien posé est à moitié résolu. »
+-« Apprendre en continu, c'est ne jamais faire deux fois le même projet. »

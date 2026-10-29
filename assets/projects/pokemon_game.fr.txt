@@ -1,0 +1,10 @@
+<span class="white-color bold">Projet personnel – Développement d'un jeu 2D en Python</span>
+<span class="light-blue-color bold">PERSO</span> 2025 - Aujourd'hui
+
+Développement d'un jeu 2D inspiré de Pokémon (Python / Pygame)
+
+-Conception et développement d'un moteur de jeu 2D en Python, avec gestion des états et des interactions
+-Implémentation des mécaniques clés : déplacement du joueur, détection des collisions et combats au tour par tour
+-Architecture modulaire et évolutive pour faciliter l'ajout de nouvelles fonctionnalités
+-Gestion des ressources graphiques et optimisation du rendu en temps réel
+<iframe class="anim-frame" src="animations/2d-game-engine.html" title="Animation du moteur de jeu 2D" loading="lazy"></iframe>

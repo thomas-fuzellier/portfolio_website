@@ -1,0 +1,12 @@
+<span class="white-color bold">Ingénieur systèmes embarqués</span>
+<span class="light-blue-color bold">Semi Lift</span> <span class="light-blue-color">Toulon, France</span> Janvier 2025 - Janvier 2026
+
+Premier poste d'ingénieur au sein d'une PME spécialisée dans les ascenseurs. J'ai contribué à la transition de l'entreprise vers le développement en interne de ses cartes électroniques et de ses logiciels embarqués.
+
+-Maintenance et évolution de logiciels embarqués en C/C++ sur microcontrôleurs
+-Développement et adaptation de drivers simples pour interfacer capteurs et actionneurs
+-Intégration et validation de capteurs dans les systèmes d'ascenseur
+-Développement d'outils Python pour automatiser les tests et analyser les données d'exploitation
+-Support technique pour le diagnostic et la résolution de pannes
+-Gestion et maintenance du site web de l'entreprise
+<iframe class="anim-frame" src="animations/elevator-firmware.html" title="Animation du firmware d'ascenseur" loading="lazy"></iframe>

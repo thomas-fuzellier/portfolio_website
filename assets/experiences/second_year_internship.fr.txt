@@ -1,0 +1,16 @@
+<span class="white-color bold">Stage ingénieur – Systèmes embarqués et instrumentation</span>
+<span class="light-blue-color bold">Stratolia</span> <span class="light-blue-color">Palaiseau, France</span> Juin - Août 2023
+
+Projet de conception et de développement de systèmes embarqués pour l'observation de la Terre à l'aide d'un ballon stratosphérique.
+
+-Développement d'un système de contrôle au sol pour une caméra embarquée
+-Conception mécanique et prototypage d'une nacelle stratosphérique
+-Développement embarqué sur microcontrôleurs pour l'acquisition de données capteurs
+-Conception électronique et développement de PCB
+-Conception et réalisation d'un banc de test simulant les conditions de vol
+<a href="assets/experiences/_reports/Rapport_de_Stage_FUZELLIER_Thomas_Deuxieme_Annee.pdf"
+   target="_blank"
+   class="report-link">
+[rapport de stage]
+</a>
+<iframe class="anim-frame" src="animations/stratospheric-balloon.html" title="Animation du ballon stratosphérique" loading="lazy"></iframe>

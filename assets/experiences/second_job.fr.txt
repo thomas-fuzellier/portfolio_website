@@ -1,0 +1,11 @@
+<span class="white-color bold">Ingénieur systèmes embarqués – Consultant</span>
+<span class="light-blue-color bold">Ethic Opex - GCK</span> <span class="light-blue-color">Cournon, France</span> Septembre 2026 - Aujourd'hui
+
+Mission au service après-vente : diagnostic, fiabilisation et amélioration continue des véhicules.
+
+-Diagnostic hardware et software des dysfonctionnements remontés par les utilisateurs
+-Solutions correctives : réalignement logiciel, calibration, instrumentation d'essai
+-Analyse de données avec des outils réseau et CAN, essais dynamiques de validation
+-Rapports d'essais et fiches d'intervention, remontée d'anomalies au bureau d'études
+-Animation de formations destinées aux partenaires réparateurs
+<iframe class="anim-frame" src="animations/sav-intervention.html" title="Animation d'une intervention SAV" loading="lazy"></iframe>

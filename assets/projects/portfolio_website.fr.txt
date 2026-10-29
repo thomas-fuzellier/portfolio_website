@@ -1,0 +1,18 @@
+<span class="white-color bold">Projet personnel – Portfolio interactif inspiré d'un terminal</span>
+<span class="light-blue-color bold">PERSO</span> 2026 - Aujourd'hui
+
+Développement d'un portfolio interactif façon Linux, qui simule un véritable environnement en ligne de commande (HTML / CSS / JavaScript) :
+
+-Conception et développement d'une interface terminal entièrement interactive, qui reproduit un shell Unix/Linux dans le navigateur
+-Système de commandes sur mesure, dont la navigation (ls, cd, cat, pwd, tree, clear) dans un système de fichiers virtuel
+-Navigation dynamique basée sur les fichiers à travers les projets, la formation et les expériences
+-Chargement asynchrone de fichiers texte et PDF externes pour une gestion du contenu évolutive
+-Autocomplétion (touche TAB) et historique des commandes pour une meilleure expérience utilisateur
+-Coloration syntaxique et sortie colorée pour imiter un vrai terminal (interface façon Ubuntu)
+-Architecture modulaire séparant l'affichage, la logique des commandes et le système de fichiers
+<a href="https://github.com/thomas-fuzellier/portfolio_website"
+   target="_blank"
+   class="report-link">
+[projet github]
+</a>
+<iframe class="anim-frame" src="animations/portfolio-terminal.html" title="Animation du portfolio terminal" loading="lazy"></iframe>

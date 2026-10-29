@@ -357,3 +357,13 @@ body {
     white-space: nowrap;
     border: 0;
 }
+
+/* Bouton de langue (FR / EN) dans la barre de raccourcis */
+#shortcuts button.lang {
+    color: #f88d00;
+}
+
+#shortcuts button.lang:hover,
+#shortcuts button.lang:focus-visible {
+    border-color: #f88d00;
+}

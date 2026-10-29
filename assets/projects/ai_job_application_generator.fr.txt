@@ -1,0 +1,14 @@
+<span class="white-color bold">Projet personnel – Générateur de candidatures assisté par IA</span>
+<span class="light-blue-color bold">Projet personnel</span> <span class="light-blue-color">Python · Tkinter · API Groq (LLM) · pytest</span> 2026
+
+Application de bureau qui génère un CV adapté, une lettre de motivation en PDF et un suivi Excel des candidatures à partir d'une offre d'emploi :
+
+-Pipeline LLM : détection de la langue, choix du CV et des paragraphes pré-rédigés les plus pertinents
+-IA limitée à la sélection de contenus validés, sans texte généré, pour un résultat maîtrisé
+-Architecture modulaire, export PDF et Excel, tests unitaires avec API simulée
+<a href="https://github.com/thomas-fuzellier/AI-Job-Application-Optimizer"
+   target="_blank"
+   class="report-link">
+[projet github]
+</a>
+<iframe class="anim-frame" src="animations/ai-job-generator.html" title="Animation du générateur de candidatures" loading="lazy"></iframe>
