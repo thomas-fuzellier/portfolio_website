@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Elevator Firmware</title>
 <style>
-    /* Couleurs reprises de css/terminal.css */
     :root {
         --bg: #000000;
         --line: #919191;
         --dim: #30363d;
         --signal: #58A6FF;
         --ok: #3FB950;
-        --cycle: 8s;            /* durée d'un cycle complet */
+        --cycle: 8s;            
     }
 
     body {
@@ -63,8 +63,6 @@
         fill: var(--line);
     }
 
-    /* ---------- Le bonhomme tape sur son ordinateur ---------- */
-
     .screen {
         animation: typing 0.8s steps(1) infinite;
     }
@@ -73,8 +71,6 @@
         0%   { fill: var(--dim); }
         50%  { fill: var(--signal); }
     }
-
-    /* ---------- Signaux du microcontrôleur vers l'ascenseur ---------- */
 
     .wire {
         fill: none;
@@ -88,8 +84,6 @@
         to { stroke-dashoffset: -8; }
     }
 
-    /* ---------- Cabine : 0 → 1 → 2 → 0 ---------- */
-    /* Chaque étage fait 30 unités de haut ; la cabine part du rez-de-chaussée */
 
     .cabin {
         animation: ride var(--cycle) ease-in-out infinite;
@@ -102,7 +96,6 @@
         84%, 100% { transform: translateY(0); }
     }
 
-    /* Portes qui s'ouvrent un instant à chaque arrêt */
     .door-l, .door-r {
         transform-box: fill-box;
         animation: doors var(--cycle) infinite;
@@ -114,8 +107,6 @@
         0%, 2%, 9%, 23%, 34%, 48%, 61%, 85%, 100% { transform: scaleX(1); }
         4%, 7%, 26%, 31%, 51%, 58%, 88%, 97%      { transform: scaleX(0.35); }
     }
-
-    /* ---------- Capteurs d'étage : verts quand la cabine est là ---------- */
 
     .sensor {
         fill: var(--dim);
@@ -142,8 +133,6 @@
         63%  { fill: var(--dim); }
     }
 
-    /* ---------- Afficheur d'étage au-dessus de la gaine ---------- */
-
     .display {
         font-size: 11px;
         font-weight: bold;
@@ -159,8 +148,6 @@
     @keyframes show-f0 { 0% { opacity: 1; } 16% { opacity: 0; } 73% { opacity: 1; } }
     @keyframes show-f1 { 0% { opacity: 0; } 16% { opacity: 1; } 41% { opacity: 0; } }
     @keyframes show-f2 { 0% { opacity: 0; } 41% { opacity: 1; } 73% { opacity: 0; } }
-
-    /* ---------- Légende : ce que je faisais ---------- */
 
     .label {
         position: relative;
@@ -187,7 +174,6 @@
         25%, 100% { opacity: 0; }
     }
 
-    /* Accessibilité : sans animation, cabine immobile et légende finale */
     @media (prefers-reduced-motion: reduce) {
         .screen, .wire, .cabin, .door-l, .door-r, .sensor, .display, .label span {
             animation: none;
@@ -202,64 +188,49 @@
 <div class="scene" role="img" aria-label="An engineer with a laptop next to a microcontroller board driving an elevator between floors.">
 
     <svg viewBox="0 0 280 120" aria-hidden="true">
-        <!-- sol -->
         <line class="stroke dim" x1="0" y1="110" x2="280" y2="110"/>
 
-        <!-- ===== Technicien avec son ordinateur ===== -->
         <circle class="stroke" cx="40" cy="58" r="8"/>
         <line class="stroke" x1="40" y1="66" x2="40" y2="88"/>
-        <!-- bras vers l'ordinateur -->
         <polyline class="stroke" points="40,72 52,78"/>
         <polyline class="stroke" points="40,72 48,82 54,80"/>
-        <!-- jambes -->
         <line class="stroke" x1="40" y1="88" x2="33" y2="110"/>
         <line class="stroke" x1="40" y1="88" x2="47" y2="110"/>
-        <!-- ordinateur portable -->
         <rect class="screen" x="52" y="68" width="14" height="10" rx="1" stroke="#919191" stroke-width="1.5"/>
         <line class="stroke" x1="50" y1="80" x2="68" y2="80"/>
 
-        <!-- câble ordinateur → carte -->
         <path class="stroke dim thin" d="M68 80 Q78 80 84 86"/>
 
-        <!-- ===== Carte électronique (microcontrôleur) ===== -->
         <rect class="stroke" x="84" y="76" width="40" height="28" rx="2"/>
         <rect class="stroke thin" x="94" y="83" width="20" height="14"/>
         <text class="chip-text" x="104" y="93">MCU</text>
-        <!-- broches -->
         <g class="stroke thin">
             <line x1="97" y1="80" x2="97" y2="83"/><line x1="102" y1="80" x2="102" y2="83"/>
             <line x1="107" y1="80" x2="107" y2="83"/><line x1="112" y1="80" x2="112" y2="83"/>
             <line x1="97" y1="97" x2="97" y2="100"/><line x1="102" y1="97" x2="102" y2="100"/>
             <line x1="107" y1="97" x2="107" y2="100"/><line x1="112" y1="97" x2="112" y2="100"/>
         </g>
-        <!-- pieds de la carte -->
         <line class="stroke thin" x1="88" y1="104" x2="88" y2="110"/>
         <line class="stroke thin" x1="120" y1="104" x2="120" y2="110"/>
 
-        <!-- signaux vers la gaine -->
         <path class="wire" d="M124 84 L150 84 L150 24 L168 24"/>
         <path class="wire" d="M124 96 L168 96"/>
 
-        <!-- ===== Gaine d'ascenseur : 3 étages (0, 1, 2) ===== -->
         <rect class="stroke" x="168" y="18" width="56" height="92"/>
         <line class="stroke dim thin" x1="168" y1="80" x2="224" y2="80"/>
         <line class="stroke dim thin" x1="168" y1="50" x2="224" y2="50"/>
-        <!-- câble de traction -->
         <line class="stroke dim thin" x1="196" y1="18" x2="196" y2="84"/>
 
-        <!-- cabine (part du rez-de-chaussée) -->
         <g class="cabin">
             <rect class="stroke" x="178" y="84" width="36" height="24" rx="1" fill="#000"/>
             <rect class="door-l stroke thin" x="181" y="87" width="15" height="18"/>
             <rect class="door-r stroke thin" x="196" y="87" width="15" height="18"/>
         </g>
 
-        <!-- capteurs d'étage -->
         <circle class="sensor f2" cx="232" cy="34" r="3"/>
         <circle class="sensor f1" cx="232" cy="64" r="3"/>
         <circle class="sensor f0" cx="232" cy="94" r="3"/>
 
-        <!-- afficheur d'étage -->
         <rect class="stroke thin" x="186" y="2" width="20" height="13" rx="2"/>
         <text class="display f0" x="196" y="12">0</text>
         <text class="display f1" x="196" y="12">1</text>

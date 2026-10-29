@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SAV Intervention</title>
 <style>
-    /* Couleurs reprises de css/terminal.css */
     :root {
         --bg: #000000;
         --line: #919191;
         --dim: #30363d;
         --problem: #f88d00;
         --ok: #3FB950;
-        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+        --cycle: 8s;            
     }
 
     body {
@@ -26,12 +26,10 @@
         font-family: monospace;
     }
 
-    /* ---------- Scène ---------- */
-
     .sav {
         position: relative;
         width: 280px;
-        margin-top: 40px;   /* place pour la bulle */
+        margin-top: 40px;   
     }
 
     .sav svg {
@@ -53,7 +51,6 @@
         stroke: var(--dim);
     }
 
-    /* Le bonhomme hoche légèrement la tête : il réfléchit */
     .tech-head {
         transform-box: fill-box;
         transform-origin: center bottom;
@@ -65,7 +62,6 @@
         50%      { transform: rotate(-6deg); }
     }
 
-    /* La voiture tremble tant qu'il y a un problème, puis se calme */
     .car {
         transform-box: fill-box;
         transform-origin: center bottom;
@@ -79,7 +75,6 @@
         75%, 100%                       { transform: none; }
     }
 
-    /* Témoin au-dessus de la voiture : "!" orange qui clignote, puis "✓" vert */
     .alert, .check {
         font-family: monospace;
         font-size: 14px;
@@ -110,11 +105,9 @@
         100%     { opacity: 0; }
     }
 
-    /* ---------- Bulle de réflexion ---------- */
 
     .bubble {
         position: absolute;
-        /* positionnée au-dessus de la tête du bonhomme (en % de la scène) */
         left: 30%;
         top: -22%;
         width: 40px;
@@ -138,14 +131,12 @@
     .bubble span:nth-child(3) { animation-delay: calc(var(--cycle) * 0.5); }
     .bubble span:nth-child(4) { animation-delay: calc(var(--cycle) * 0.75); }
 
-    /* Chaque icône est visible pendant un quart du cycle */
     @keyframes step {
         0%       { opacity: 0; transform: scale(0.6); }
         3%, 21%  { opacity: 1; transform: scale(1); }
         25%, 100%{ opacity: 0; transform: scale(0.6); }
     }
 
-    /* ---------- Légende ---------- */
 
     .label {
         position: relative;
@@ -166,7 +157,6 @@
     .label span:nth-child(3) { animation-delay: calc(var(--cycle) * 0.5); }
     .label span:nth-child(4) { animation-delay: calc(var(--cycle) * 0.75); color: var(--ok); }
 
-    /* Accessibilité : sans animation, on affiche directement l'état "réparé" */
     @media (prefers-reduced-motion: reduce) {
         .tech-head, .car, .alert { animation: none; }
         .alert { opacity: 0; }
@@ -188,54 +178,39 @@
         <!-- sol -->
         <line class="stroke ground" x1="0" y1="110" x2="280" y2="110"/>
 
-        <!-- petites bulles qui montent vers la grande bulle -->
         <circle cx="82" cy="36" r="2" fill="#30363d"/>
         <circle cx="89" cy="26" r="3" fill="#30363d"/>
 
-        <!-- ===== Technicien ===== -->
         <g class="tech">
             <g class="tech-head">
                 <circle class="stroke" cx="70" cy="48" r="8"/>
             </g>
-            <!-- corps -->
             <line class="stroke" x1="70" y1="56" x2="70" y2="84"/>
-            <!-- bras : main au menton (réfléchit) -->
             <polyline class="stroke" points="70,64 80,70 76,56"/>
-            <!-- bras : main sur la hanche -->
             <polyline class="stroke" points="70,64 60,72 66,80"/>
-            <!-- jambes -->
             <line class="stroke" x1="70" y1="84" x2="62" y2="110"/>
             <line class="stroke" x1="70" y1="84" x2="78" y2="110"/>
         </g>
 
-        <!-- ===== Bus (avant tourné vers le technicien) ===== -->
         <g class="car">
-            <!-- caisse -->
             <path class="stroke" d="M108 98 L108 54 Q108 46 116 46 L262 46 Q268 46 268 52 L268 98"/>
-            <!-- bas de caisse entre les roues -->
             <line class="stroke" x1="108" y1="98" x2="147" y2="98"/>
             <line class="stroke" x1="173" y1="98" x2="225" y2="98"/>
             <line class="stroke" x1="251" y1="98" x2="268" y2="98"/>
-            <!-- pare-brise -->
             <path class="stroke" d="M112 52 L124 52 L124 74 L112 74"/>
-            <!-- porte -->
             <rect class="stroke" x="129" y="54" width="14" height="40" rx="1"/>
             <line class="stroke" x1="136" y1="54" x2="136" y2="94"/>
-            <!-- rangée de vitres -->
             <rect class="stroke" x="149" y="54" width="25" height="16" rx="2"/>
             <rect class="stroke" x="180" y="54" width="25" height="16" rx="2"/>
             <rect class="stroke" x="211" y="54" width="25" height="16" rx="2"/>
             <rect class="stroke" x="242" y="54" width="20" height="16" rx="2"/>
-            <!-- phare -->
             <circle cx="113" cy="88" r="2" fill="#919191"/>
-            <!-- roues -->
             <circle class="stroke" cx="160" cy="100" r="11"/>
             <circle class="stroke" cx="238" cy="100" r="11"/>
             <circle cx="160" cy="100" r="2" fill="#919191"/>
             <circle cx="238" cy="100" r="2" fill="#919191"/>
         </g>
 
-        <!-- témoin d'état au-dessus de l'avant du bus -->
         <text class="alert" x="118" y="38">!</text>
         <text class="check" x="118" y="38">✓</text>
     </svg>

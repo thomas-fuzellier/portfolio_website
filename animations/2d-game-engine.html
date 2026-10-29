@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2D Game Engine</title>
 <style>
-    /* Couleurs reprises de css/terminal.css */
     :root {
         --bg: #000000;
         --line: #919191;
@@ -14,7 +14,7 @@
         --accent: #ffe600;
         --warn: #f88d00;
         --ok: #3FB950;
-        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+        --cycle: 8s;            
     }
 
     body {
@@ -56,7 +56,6 @@
         font-size: 7px;
     }
 
-    /* ---------- Machine à états : OVERWORLD → BATTLE ---------- */
 
     .overworld, .state-overworld {
         animation: show-overworld var(--cycle) steps(1) infinite;
@@ -73,7 +72,6 @@
     .state-overworld { fill: var(--signal); }
     .state-battle    { fill: var(--warn); }
 
-    /* Flash de transition vers le combat */
     .flash {
         fill: #ffffff;
         opacity: 0;
@@ -89,22 +87,18 @@
         51%, 100% { opacity: 0; }
     }
 
-    /* ---------- Étapes 1 et 2 : déplacement et collision ---------- */
-
     .player {
         animation: walk var(--cycle) linear infinite;
     }
 
-    /* Une case = 15 unités. Droite ×2, tentative vers le haut (arbre !), puis droite ×3 */
     @keyframes walk {
         0%, 4%    { transform: translate(0, 0); }
         18%, 26%  { transform: translate(30px, 0); }
-        29%       { transform: translate(30px, -6px); }   /* bute contre l'arbre */
+        29%       { transform: translate(30px, -6px); }   
         32%, 36%  { transform: translate(30px, 0); }
         46%, 100% { transform: translate(75px, 0); }
     }
 
-    /* Petit rebond de marche */
     .bob {
         animation: bob 0.3s steps(2) infinite;
     }
@@ -132,8 +126,6 @@
         29%, 32%           { stroke: var(--warn); }
     }
 
-    /* ---------- Étape 3 : combat au tour par tour ---------- */
-
     .hp {
         transform-box: fill-box;
         transform-origin: left center;
@@ -160,7 +152,6 @@
         72%, 100% { transform: scaleX(0.75); }
     }
 
-    /* Attaques : projectile joueur → créature, puis créature → joueur, puis joueur → créature */
     .shot {
         opacity: 0;
     }
@@ -190,7 +181,6 @@
         77.5%, 100% { opacity: 0; transform: translate(96px, -30px); }
     }
 
-    /* La créature clignote quand elle est touchée, puis disparaît */
     .creature {
         animation: creature var(--cycle) infinite;
     }
@@ -232,8 +222,6 @@
 
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* ---------- Légende ---------- */
-
     .label {
         position: relative;
         height: 1.4em;
@@ -259,7 +247,6 @@
         25%, 100% { opacity: 0; }
     }
 
-    /* Accessibilité : sans animation, on affiche la carte du jeu */
     @media (prefers-reduced-motion: reduce) {
         .overworld, .state-overworld, .battle, .state-battle, .flash, .player, .bob,
         .blocked, .tree-hit, .hp, .shot, .creature, .hero, .win, .cursor-fight, .label span {
@@ -276,11 +263,9 @@
 
     <svg viewBox="0 0 280 120" aria-hidden="true">
         <defs>
-            <!-- herbe courte : petites touffes sur chaque case de 15 × 15 -->
             <pattern id="grass" x="50" y="16" width="15" height="15" patternUnits="userSpaceOnUse">
                 <path d="M4 10 l1 -2 l1 2 M10 5 l1 -2 l1 2" fill="none" stroke="#30363d" stroke-width="1"/>
             </pattern>
-            <!-- hautes herbes -->
             <pattern id="tall-grass" x="50" y="16" width="15" height="15" patternUnits="userSpaceOnUse">
                 <path d="M2 13 l2 -7 l2 7 M7 13 l2 -9 l2 9 M11 13 l2 -6 l2 6" fill="none" stroke="#3FB950" stroke-width="1" opacity="0.7"/>
             </pattern>
@@ -289,32 +274,26 @@
             </clipPath>
         </defs>
 
-        <!-- état courant du moteur de jeu -->
         <text class="state-overworld" x="50" y="11">STATE: OVERWORLD</text>
         <text class="state-battle"    x="50" y="11">STATE: BATTLE</text>
 
         <g clip-path="url(#screen)">
 
-            <!-- ===== Carte (overworld) : grille de 12 × 6 cases ===== -->
             <g class="overworld">
                 <rect x="50" y="16" width="180" height="90" fill="url(#grass)"/>
                 <!-- zone de hautes herbes (colonnes 5 à 7, lignes 3 à 5) -->
                 <rect x="125" y="61" width="45" height="45" fill="url(#tall-grass)"/>
 
-                <!-- arbres (obstacles) -->
                 <g class="stroke thin">
                     <circle cx="57.5" cy="27" r="6"/><line x1="57.5" y1="33" x2="57.5" y2="37"/>
                     <circle cx="177.5" cy="27" r="6"/><line x1="177.5" y1="33" x2="177.5" y2="37"/>
                     <circle cx="207.5" cy="72" r="6"/><line x1="207.5" y1="78" x2="207.5" y2="82"/>
                 </g>
-                <!-- l'arbre contre lequel le joueur bute (colonne 3, ligne 3) -->
                 <g class="stroke thin tree-hit">
                     <circle cx="102.5" cy="67" r="6"/><line x1="102.5" y1="73" x2="102.5" y2="76"/>
                 </g>
-                <!-- rocher -->
                 <path class="stroke thin" d="M146 30 l4 -5 l7 1 l3 5 Z"/>
 
-                <!-- joueur (sprite pixel) -->
                 <g class="player">
                     <g class="bob">
                         <rect x="55" y="78" width="7" height="6" fill="#ffffff"/>
@@ -323,19 +302,15 @@
                         <rect x="55" y="89" width="3" height="2" fill="#919191"/>
                         <rect x="59" y="89" width="3" height="2" fill="#919191"/>
                     </g>
-                    <!-- collision ! -->
                     <text class="blocked" x="64" y="76">✕</text>
                 </g>
             </g>
 
-            <!-- ===== Combat au tour par tour ===== -->
             <g class="battle">
-                <!-- boîte de vie de la créature -->
                 <text x="58" y="28">WILD BLOB  Lv5</text>
                 <rect class="stroke thin dim" x="58" y="31" width="50" height="4" rx="1"/>
                 <rect class="hp enemy" x="58" y="31" width="50" height="4" rx="1"/>
 
-                <!-- créature (originale) -->
                 <ellipse cx="190" cy="57" rx="16" ry="3" fill="#30363d"/>
                 <g class="creature">
                     <path class="stroke" d="M176 55 Q176 34 190 34 Q204 34 204 55 Z"/>
@@ -345,24 +320,20 @@
                     <rect x="193" y="42" width="3" height="4" fill="#ffffff"/>
                 </g>
 
-                <!-- héros vu de dos -->
                 <ellipse cx="90" cy="88" rx="16" ry="3" fill="#30363d"/>
                 <g class="hero">
                     <rect x="83" y="64" width="14" height="11" fill="#ffffff"/>
                     <rect x="80" y="75" width="20" height="12" fill="#58A6FF"/>
                 </g>
 
-                <!-- boîte de vie du joueur -->
                 <text x="150" y="74">YOU  Lv7</text>
                 <rect class="stroke thin dim" x="150" y="77" width="50" height="4" rx="1"/>
                 <rect class="hp me" x="150" y="77" width="50" height="4" rx="1"/>
 
-                <!-- projectiles -->
                 <circle class="shot s1" cx="94" cy="68" r="3"/>
                 <circle class="shot s2" cx="190" cy="40" r="3"/>
                 <circle class="shot s3" cx="94" cy="68" r="3"/>
 
-                <!-- menu -->
                 <line class="stroke thin dim" x1="50" y1="93" x2="230" y2="93"/>
                 <text class="cursor-fight" x="58" y="102">▸</text>
                 <text x="65" y="102">FIGHT</text>
@@ -372,11 +343,9 @@
                 <text class="win" x="190" y="50">YOU WIN!</text>
             </g>
 
-            <!-- flash de transition -->
             <rect class="flash" x="50" y="16" width="180" height="90"/>
         </g>
 
-        <!-- cadre de l'écran de jeu -->
         <rect class="stroke" x="50" y="16" width="180" height="90" rx="3"/>
     </svg>
 

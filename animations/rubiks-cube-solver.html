@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rubik's Cube Solver</title>
 <style>
-    /* Couleurs reprises de css/terminal.css */
     :root {
         --bg: #000000;
         --line: #919191;
@@ -13,9 +13,8 @@
         --signal: #58A6FF;
         --accent: #ffe600;
         --ok: #3FB950;
-        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+        --cycle: 8s;          
 
-        /* couleurs des cases du cube */
         --c-green:  #3FB950;
         --c-blue:   #58A6FF;
         --c-yellow: #ffe600;
@@ -64,7 +63,6 @@
         font-size: 8px;
     }
 
-    /* ---------- Étape 1 : commande depuis le smartphone en Bluetooth ---------- */
 
     .solve-btn {
         animation: tap var(--cycle) steps(1) infinite;
@@ -100,7 +98,6 @@
         100% { opacity: 0; }
     }
 
-    /* ---------- Étape 2 : algorithme de résolution en C ---------- */
 
     .chip {
         animation: compute var(--cycle) infinite;
@@ -127,7 +124,6 @@
     @keyframes move-3 { 0% { opacity: 0; } 39% { opacity: 1; } 97% { opacity: 0; } }
     @keyframes move-4 { 0% { opacity: 0; } 44% { opacity: 1; } 97% { opacity: 0; } }
 
-    /* ---------- Étape 3 : les moteurs pas à pas tournent la face ---------- */
 
     .wire {
         fill: none;
@@ -157,7 +153,6 @@
         76%, 100% { transform: rotate(720deg); }
     }
 
-    /* La face du cube tourne d'un quart de tour (à peine) à chaque mouvement */
     .face {
         transform-box: fill-box;
         transform-origin: center;
@@ -169,7 +164,6 @@
         56%, 63%, 70%                               { transform: rotate(-8deg); }
     }
 
-    /* Couleurs des 9 cases : mélangée → résolue (générées) */
     .st {
         animation: var(--cycle) steps(1) infinite;
     }
@@ -203,7 +197,6 @@
         98% { stroke: var(--line); }
     }
 
-    /* ---------- Légende ---------- */
 
     .label {
         position: relative;
@@ -230,7 +223,6 @@
         25%, 100% { opacity: 0; }
     }
 
-    /* Accessibilité : sans animation, on affiche le cube résolu */
     @media (prefers-reduced-motion: reduce) {
         .solve-btn, .bt-waves, .wave, .chip, .moves tspan, .wire, .rotor, .face,
         .st, .face-frame, .label span {
@@ -251,26 +243,21 @@
         <!-- sol -->
         <line class="stroke dim" x1="0" y1="110" x2="280" y2="110"/>
 
-        <!-- ===== Smartphone ===== -->
         <rect class="stroke" x="12" y="40" width="24" height="44" rx="3"/>
         <line class="stroke thin" x1="21" y1="44" x2="27" y2="44"/>
         <rect class="stroke thin solve-btn" x="15" y="58" width="18" height="9" rx="2"/>
         <text x="24" y="64.5" style="font-size:5px">SOLVE</text>
         <text x="24" y="98">app</text>
 
-        <!-- ondes Bluetooth vers la carte -->
         <g class="bt-waves">
             <path class="stroke thin wave"    d="M40 58 Q43 62 40 66"/>
             <path class="stroke thin wave w2" d="M44 55 Q49 62 44 69"/>
             <path class="stroke thin wave w3" d="M48 52 Q55 62 48 72"/>
         </g>
 
-        <!-- ===== Carte électronique (PCB) ===== -->
         <rect class="stroke" x="58" y="50" width="46" height="40" rx="2"/>
-        <!-- module Bluetooth -->
         <rect class="stroke thin" x="61" y="53" width="12" height="7" rx="1"/>
         <text x="67" y="58.5" style="font-size:5px">BT</text>
-        <!-- microcontrôleur -->
         <rect class="stroke thin chip" x="72" y="64" width="22" height="16"/>
         <text x="83" y="74.5" style="font-size:6px">MCU</text>
         <g class="stroke thin">
@@ -281,17 +268,14 @@
         </g>
         <text x="81" y="98">PCB</text>
 
-        <!-- mouvements calculés par l'algorithme -->
         <text class="moves" x="198" y="24" style="font-size:9px">
             <tspan class="m1">R </tspan><tspan class="m2">U </tspan><tspan class="m3">R' </tspan><tspan class="m4">U'</tspan>
         </text>
 
-        <!-- câbles carte → moteurs pas à pas -->
         <path class="wire" d="M104 62 L149 62"/>
         <path class="wire" d="M104 82 L130 82 L130 100 L191 100"/>
         <path class="wire" d="M205 100 L240 100 L240 69"/>
 
-        <!-- ===== Moteurs pas à pas ===== -->
         <g>
             <circle class="stroke" cx="156" cy="62" r="7"/>
             <line class="stroke thin rotor" x1="156" y1="57" x2="156" y2="67"/>
@@ -305,7 +289,6 @@
             <line class="stroke thin rotor" x1="198" y1="95" x2="198" y2="105"/>
         </g>
 
-        <!-- ===== Face du Rubik's Cube ===== -->
         <g class="face">
             <rect class="stroke face-frame" x="169" y="33" width="58" height="58" rx="3"/>
             <rect class="st s1" x="172" y="36" width="16" height="16" rx="2"/>

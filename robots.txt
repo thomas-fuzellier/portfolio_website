@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /scripts/
+
+Sitemap: https://fuzellier-portfolio-website.vercel.app/sitemap.xml

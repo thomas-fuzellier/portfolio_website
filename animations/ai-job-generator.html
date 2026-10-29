@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Job Generator</title>
 <style>
-    /* Couleurs reprises de css/terminal.css */
     :root {
         --bg: #000000;
         --line: #919191;
@@ -13,7 +13,7 @@
         --signal: #58A6FF;
         --accent: #ffe600;
         --ok: #3FB950;
-        --cycle: 8s;            /* durée d'un cycle complet (4 étapes de 2 s) */
+        --cycle: 8s;            
     }
 
     body {
@@ -55,8 +55,6 @@
         fill: var(--line);
     }
 
-    /* ---------- Étape 1 : lecture de l'offre d'emploi ---------- */
-
     .scan {
         stroke: var(--signal);
         stroke-width: 1.5;
@@ -69,7 +67,6 @@
         25%, 100% { transform: translateY(44px); opacity: 0; }
     }
 
-    /* Flux de données entre les étapes */
     .flow {
         fill: none;
         stroke: var(--signal);
@@ -88,8 +85,6 @@
     @keyframes active-1 { 0% { opacity: 0.25; } 15% { opacity: 1; } 50% { opacity: 0.25; } }
     @keyframes active-2 { 0% { opacity: 0.25; } 45% { opacity: 1; } 75% { opacity: 0.25; } }
     @keyframes active-3 { 0% { opacity: 0.25; } 72% { opacity: 1; } 100% { opacity: 0.25; } }
-
-    /* ---------- Étape 2 : le LLM détecte la langue ---------- */
 
     .llm-box {
         animation: think var(--cycle) infinite;
@@ -113,8 +108,6 @@
         100%      { opacity: 0; }
     }
 
-    /* ---------- Étape 3 : sélection dans la bibliothèque validée ---------- */
-
     .block {
         animation: var(--cycle) steps(1) infinite;
     }
@@ -134,8 +127,6 @@
         98%  { stroke: var(--dim); }
     }
 
-    /* ---------- Étape 4 : CV, lettre PDF et suivi Excel ---------- */
-
     .output {
         opacity: 0;
         animation: var(--cycle) infinite;
@@ -152,8 +143,6 @@
     .out-text {
         font-size: 8px;
     }
-
-    /* ---------- Légende ---------- */
 
     .label {
         position: relative;
@@ -180,7 +169,6 @@
         25%, 100% { opacity: 0; }
     }
 
-    /* Accessibilité : sans animation, on affiche le résultat final */
     @media (prefers-reduced-motion: reduce) {
         .scan, .flow, .llm-box, .lang, .block, .output, .label span { animation: none; }
         .scan { opacity: 0; }
@@ -195,7 +183,6 @@
 
     <svg viewBox="0 0 280 120" aria-hidden="true">
 
-        <!-- ===== Offre d'emploi ===== -->
         <path class="stroke" d="M8 32 L38 32 L48 42 L48 98 L8 98 Z"/>
         <path class="stroke thin" d="M38 32 L38 42 L48 42"/>
         <g class="stroke thin dim">
@@ -209,18 +196,14 @@
         <line class="scan" x1="11" y1="46" x2="45" y2="46"/>
         <text x="28" y="112" font-size="8">job offer</text>
 
-        <!-- offre → LLM -->
         <path class="flow f1" d="M50 65 L82 65"/>
 
-        <!-- ===== LLM ===== -->
         <rect class="stroke llm-box" x="84" y="48" width="44" height="34" rx="4"/>
         <text x="106" y="69" font-size="10">LLM</text>
         <text class="lang" x="106" y="40">lang: EN</text>
 
-        <!-- LLM → bibliothèque -->
         <path class="flow f2" d="M130 65 L148 65"/>
 
-        <!-- ===== Bibliothèque de contenus validés ===== -->
         <rect class="stroke thin dim" x="150" y="28" width="46" height="74" rx="2"/>
         <rect class="stroke thin dim block"      x="155" y="34" width="36" height="10" rx="1"/>
         <rect class="stroke thin block pick-1" x="155" y="48" width="36" height="10" rx="1"/>
@@ -229,11 +212,8 @@
         <rect class="stroke thin dim block"      x="155" y="90" width="36" height="8"  rx="1"/>
         <text x="173" y="112" font-size="8">validated</text>
 
-        <!-- bibliothèque → sorties -->
         <path class="flow f3" d="M198 65 L216 65"/>
 
-        <!-- ===== Sorties ===== -->
-        <!-- CV -->
         <g class="output o1">
             <rect class="stroke thin" x="222" y="22" width="22" height="26" rx="1"/>
             <circle class="stroke thin" cx="229" cy="30" r="3"/>
@@ -242,13 +222,11 @@
             <line class="stroke thin" x1="226" y1="43" x2="236" y2="43"/>
             <text class="out-text" x="260" y="38">CV</text>
         </g>
-        <!-- Lettre PDF -->
         <g class="output o2">
             <rect class="stroke thin" x="220" y="56" width="26" height="18" rx="1"/>
             <polyline class="stroke thin" points="220,56 233,67 246,56"/>
             <text class="out-text" x="260" y="68">PDF</text>
         </g>
-        <!-- Suivi Excel -->
         <g class="output o3">
             <rect class="stroke thin" x="221" y="82" width="24" height="18" rx="1"/>
             <line class="stroke thin" x1="221" y1="88" x2="245" y2="88"/>
