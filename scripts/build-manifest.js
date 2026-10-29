@@ -6,12 +6,7 @@ const ASSETS_DIR = path.join(ROOT, "assets");
 const OUTPUT = path.join(ASSETS_DIR, "manifest.json");
 const VISIBLE_EXTENSIONS = [".txt", ".pdf"];
 
-/*
- * Traductions : "first_job.fr.txt" est la version française de "first_job.txt".
- * Elle n'apparaît pas comme un fichier à part : elle est rattachée au fichier
- * anglais dans "translations", et le terminal l'affiche quand la langue est "fr".
- */
-const TRANSLATION_RE = /^(.+)\.([a-z]{2})(\.[a-z0-9]+)$/i;   // nom.fr.txt → nom, fr, .txt
+const TRANSLATION_RE = /^(.+)\.([a-z]{2})(\.[a-z0-9]+)$/i;   
 const LANGUAGES = ["fr"];
 
 function isHidden(name) {
@@ -53,7 +48,6 @@ function walk(absDir) {
         node[entry.name] = { type: "file", path: toWebPath(absPath) };
     }
 
-    // On rattache chaque traduction à son fichier d'origine
     for (const { base, lang, path: webPath } of translations) {
         if (!node[base]) {
             console.warn(`⚠ Traduction sans fichier d'origine : ${webPath} (attendu : ${base})`);

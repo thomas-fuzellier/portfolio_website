@@ -9,12 +9,6 @@ let currentPath = ["/"];
 
 const COMMANDS = ["ls", "cd", "pwd", "clear", "help", "cat", "tree", "whoami", "contact", "cv", "neofetch", "sudo", "lang"];
 
-/* ---------- Langues : anglais (par défaut) et français ---------- */
-/*
- * Tous les textes de l'interface sont ici, dans les deux langues.
- * Le contenu (expériences, projets…) est dans assets/ : "fichier.fr.txt" est
- * la version française de "fichier.txt" (si elle manque, on affiche l'anglais).
- */
 const LANGS = ["en", "fr"];
 const DEFAULT_LANG = "en";
 const LANG_STORAGE_KEY = "portfolio-lang";
@@ -149,12 +143,11 @@ Lancement du protocole de recrutement...
     }
 };
 
-/* Langue enregistrée dans le navigateur (si possible), sinon anglais */
 function loadLang() {
     try {
         const saved = localStorage.getItem(LANG_STORAGE_KEY);
         if (LANGS.includes(saved)) return saved;
-    } catch (err) { /* stockage indisponible (navigation privée…) */ }
+    } catch (err) { }
     return DEFAULT_LANG;
 }
 
@@ -168,10 +161,9 @@ function t(key) {
 function setLang(newLang) {
     lang = newLang;
     document.documentElement.lang = lang;
-    try { localStorage.setItem(LANG_STORAGE_KEY, lang); } catch (err) { /* ignoré */ }
+    try { localStorage.setItem(LANG_STORAGE_KEY, lang); } catch (err) {  }
 }
 
-/* ---------- Chargement du système de fichiers ---------- */
 
 async function loadFilesystem() {
     try {
@@ -184,7 +176,6 @@ async function loadFilesystem() {
     }
 }
 
-/* ---------- Affichage ---------- */
 
 function showBootScreen() {
     output.insertAdjacentHTML("beforeend",
@@ -192,25 +183,18 @@ function showBootScreen() {
     output.scrollTop = output.scrollHeight;
 }
 
-/* insertAdjacentHTML ajoute à la fin sans re-générer tout le terminal :
-   les animations (iframes) déjà affichées ne se rechargent pas à chaque commande. */
+
 function print(text) {
     output.insertAdjacentHTML("beforeend", text + "<br>");
     output.scrollTop = output.scrollHeight;
 }
 
-/* ---------- Effet de frappe (sortie de cat) ---------- */
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* Appelée pour afficher immédiatement la fin du texte en cours de frappe */
 let finishTyping = null;
 
-/*
- * Affiche du HTML caractère par caractère, comme dans un vrai terminal.
- * La durée est fixe (~0,7 s) quelle que soit la longueur du texte.
- * Une touche ou un clic pendant la frappe affiche tout d'un coup.
- */
+
 function printTyped(html, duration = 700) {
     const block = document.createElement("span");
     block.innerHTML = html;
@@ -221,11 +205,9 @@ function printTyped(html, duration = 700) {
         return Promise.resolve();
     }
 
-    // Les animations et images n'apparaissent qu'une fois le texte écrit
     const media = block.querySelectorAll("iframe, img");
     media.forEach(el => el.style.visibility = "hidden");
 
-    // On vide tous les noeuds texte, puis on les remplit petit à petit
     const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
     const nodes = [];
     while (walker.nextNode()) {
@@ -281,7 +263,6 @@ function printTyped(html, duration = 700) {
     });
 }
 
-/* ---------- Navigation ---------- */
 
 function getPath() {
     if (currentPath.length === 1) return "~";
@@ -307,7 +288,6 @@ function getNode() {
     return nodeAt(currentPath).children;
 }
 
-/* Résout "projects", "projects/", "../skills", "~", "/" … en tableau de chemin */
 function resolvePath(target) {
     let parts = target.startsWith("/") || target.startsWith("~")
         ? ["/"]
@@ -325,13 +305,10 @@ function resolvePath(target) {
     return parts;
 }
 
-/* Chemin absolu d'un élément du dossier courant, ex. "/projects/pokemon_game.txt" */
 function absolutePath(name) {
     return "/" + [...currentPath.slice(1), name].join("/");
 }
 
-/* Chaque entrée affichée par ls est cliquable : cd pour un dossier, cat pour un fichier.
-   On utilise le chemin absolu pour que le clic marche même après un cd ailleurs. */
 function ls() {
     const node = getNode();
     let result = "";
@@ -384,13 +361,11 @@ async function openFile(name) {
         return;
     }
 
-    /* PDF */
     if (node.path.toLowerCase().endsWith(".pdf")) {
         window.open(node.path, "_blank");
         return;
     }
 
-    /* TEXT : version traduite si elle existe ("fichier.fr.txt"), sinon l'original */
     const textPath = (node.translations && node.translations[lang]) || node.path;
 
     try {
@@ -401,8 +376,6 @@ async function openFile(name) {
         print(t("loadError"));
     }
 }
-
-/* ---------- Autocomplétion ---------- */
 
 function fuzzyMatch(input, target) {
     input = input.toLowerCase();
@@ -415,7 +388,6 @@ function fuzzyMatch(input, target) {
     return i === input.length;
 }
 
-/* Liste des complétions possibles pour la saisie en cours */
 function getMatches(value) {
     const parts = value.split(" ");
     const command = parts[0];
@@ -446,15 +418,9 @@ function getMatches(value) {
     return { parts, matches };
 }
 
-/*
- * Tab : complète la saisie.
- * S'il y a plusieurs correspondances, chaque nouvel appui sur Tab affiche
- * la suivante (Shift+Tab : la précédente), en boucle.
- */
-let tabCycle = null; // { parts, matches, index, completed }
+let tabCycle = null;
 
 function autocomplete(value, backwards = false) {
-    // Appui répété sur Tab : on passe à la correspondance suivante
     if (tabCycle && value === tabCycle.completed) {
         const count = tabCycle.matches.length;
         tabCycle.index = (tabCycle.index + (backwards ? -1 : 1) + count) % count;
@@ -477,15 +443,12 @@ function autocomplete(value, backwards = false) {
     return parts.join(" ");
 }
 
-/* ---------- Commandes supplémentaires ---------- */
-
 function escapeHtml(text) {
     return text.replace(/[&<>"']/g, c => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
 }
 
-/* tree : toute l'arborescence, avec des entrées cliquables comme dans ls */
 function tree() {
     const lines = ["<span class='dir'>~</span>"];
 
@@ -508,7 +471,6 @@ function tree() {
     print(lines.join("\n") + "\n");
 }
 
-/* neofetch : petite fiche système façon Linux, avec un logo ASCII (une puce) */
 function neofetch() {
     const art = [
         "   ┌┬┬┬┬┐   ",
@@ -534,7 +496,6 @@ function neofetch() {
             .map(c => `<span style="color:${c}">███</span>`).join("")
     ];
 
-    // Petit écran : le logo au-dessus des infos (côte à côte, les lignes se cassent)
     if (window.matchMedia("(max-width: 600px)").matches) {
         print(`<span class="green-color">${art.join("\n")}</span>\n\n${info.join("\n")}\n`);
         return;
@@ -548,7 +509,6 @@ function neofetch() {
     print(lines.join("\n") + "\n");
 }
 
-/* sudo : easter egg pour les recruteurs */
 async function sudo(arg) {
     if (!/^hire[- ]?me$/i.test(arg)) {
         print(t("sudoDenied"));
@@ -558,7 +518,6 @@ async function sudo(arg) {
     await printTyped(t("sudoHire"), 1200);
 }
 
-/* lang : passer de l'anglais au français (et inversement) */
 function changeLang(arg) {
     if (!arg) {
         print(t("langCurrent") + "\n");
@@ -574,17 +533,15 @@ function changeLang(arg) {
     setLang(wanted);
     buildShortcuts();
 
-    // On repart d'un terminal propre, dans la nouvelle langue
     output.innerHTML = "";
     showBootScreen();
     print(t("langSwitched") + "\n");
 }
 
-/* ---------- Historique des commandes (↑ / ↓) ---------- */
 
 const commandHistory = [];
-let historyIndex = 0;     // position dans l'historique pendant la navigation
-let historyDraft = "";    // saisie en cours, retrouvée en redescendant tout en bas
+let historyIndex = 0;     
+let historyDraft = "";   
 
 function addToHistory(cmd) {
     if (commandHistory[commandHistory.length - 1] !== cmd) commandHistory.push(cmd);
@@ -601,11 +558,9 @@ function browseHistory(direction) {
         ? historyDraft
         : commandHistory[historyIndex];
 
-    // Curseur à la fin de la ligne
     requestAnimationFrame(() => input.setSelectionRange(input.value.length, input.value.length));
 }
 
-/* ---------- Commandes ---------- */
 
 async function handleCommand(cmd) {
     if (!cmd) return;
@@ -665,9 +620,6 @@ async function handleCommand(cmd) {
     print(t("notFound"));
 }
 
-/* ---------- Commandes lancées au clic ---------- */
-
-/* Les commandes sont exécutées l'une après l'autre, même si on clique vite */
 let commandQueue = Promise.resolve();
 
 function runCommands(...cmds) {
@@ -675,25 +627,18 @@ function runCommands(...cmds) {
         commandQueue = commandQueue.then(() => handleCommand(cmd));
     });
 
-    // Sur ordinateur, on remet le curseur dans la ligne de saisie
-    // (pas sur mobile, pour ne pas ouvrir le clavier à chaque clic)
     if (window.matchMedia("(pointer: fine)").matches) input.focus();
 
     return commandQueue;
 }
 
-/* Clic sur une entrée de ls (ou tout élément avec data-cmd) dans la sortie */
 output.addEventListener("click", function(e) {
-    // Un clic pendant l'effet de frappe affiche tout le texte d'un coup
     if (finishTyping) finishTyping();
 
     const target = e.target.closest("[data-cmd]");
     if (target) runCommands(target.dataset.cmd);
 });
 
-/* ---------- Raccourcis sous le terminal ---------- */
-
-/* Dossier → cd + ls ; fichier → cat. Le CV est cherché dans about/ (premier PDF "CV…"). */
 function findCv() {
     const about = filesystem.children.about;
     if (!about || about.type !== "dir") return null;
@@ -714,7 +659,6 @@ function buildShortcuts() {
 
     shortcuts.push({ label: "clear", cmds: ["clear"], className: "muted" });
 
-    // Bouton de langue : propose l'autre langue
     const langButton = t("langButton");
     shortcuts.push({ label: langButton.label, title: langButton.title, cmds: [langButton.cmd], className: "lang" });
 
@@ -730,11 +674,9 @@ function buildShortcuts() {
     });
 }
 
-/* Toucher n'importe où sur la ligne de saisie ouvre le clavier (pratique sur mobile) */
 document.getElementById("input-line").addEventListener("click", () => input.focus());
 
 input.addEventListener("keydown", function(e) {
-    // Une touche pendant l'effet de frappe affiche tout le texte d'un coup
     if (finishTyping) finishTyping();
 
     if (e.key === "Enter") {
@@ -755,11 +697,8 @@ input.addEventListener("keydown", function(e) {
         return;
     }
 
-    // Toute autre touche (sauf Shift seul) arrête le défilement des complétions
     if (e.key !== "Shift") tabCycle = null;
 });
-
-/* ---------- Démarrage ---------- */
 
 (async function init() {
     showBootScreen();

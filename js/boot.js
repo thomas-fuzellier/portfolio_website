@@ -132,22 +132,16 @@ function showContinue() {
 
 printLine();
 
-/* ---------- Passer l'intro ---------- */
-
-/* Petit message discret pendant le démarrage */
 const skipHint = document.createElement("div");
 skipHint.id = "skip-hint";
 skipHint.textContent = "press any key or click to skip";
 document.getElementById("boot-screen").appendChild(skipHint);
 
-/* N'importe quelle touche ou un clic mène directement au terminal,
-   pendant l'intro comme à la fin (Enter / clic) */
 function goToTerminal() {
     window.location.href = "terminal.html";
 }
 
 document.addEventListener("keydown", (e) => {
-    // On ignore les touches de modification seules (Shift, Ctrl, Alt…)
     if (["Shift", "Control", "Alt", "Meta"].includes(e.key)) return;
     goToTerminal();
 });
