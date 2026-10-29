@@ -151,11 +151,26 @@ function loadLang() {
     return DEFAULT_LANG;
 }
 
-let lang = loadLang();
+const urlParams = new URLSearchParams(window.location.search);
+
+let lang = LANGS.includes(urlParams.get("lang")) ? urlParams.get("lang") : loadLang();
 document.documentElement.lang = lang;
 
 function t(key) {
     return I18N[lang][key];
+}
+
+function updateUrl(openPath) {
+    const params = new URLSearchParams();
+    if (openPath) params.set("open", openPath);
+    if (lang !== DEFAULT_LANG) params.set("lang", lang);
+
+    const query = params.toString().replace(/%2F/g, "/");
+    const url = window.location.pathname + (query ? "?" + query : "");
+
+    if (url !== window.location.pathname + window.location.search) {
+        history.pushState(null, "", url);
+    }
 }
 
 function setLang(newLang) {
@@ -349,7 +364,8 @@ async function openFile(name) {
         return;
     }
 
-    const node = nodeAt(resolvePath(name));
+    const fullPath = resolvePath(name);
+    const node = nodeAt(fullPath);
 
     if (!node) {
         print(t("fileNotFound"));
@@ -371,6 +387,7 @@ async function openFile(name) {
     try {
         const response = await fetch(textPath);
         if (!response.ok) throw new Error(response.status);
+        updateUrl("/" + fullPath.slice(1).join("/"));
         await printTyped(await response.text());
     } catch (err) {
         print(t("loadError"));
@@ -532,6 +549,7 @@ function changeLang(arg) {
 
     setLang(wanted);
     buildShortcuts();
+    updateUrl(new URLSearchParams(window.location.search).get("open"));
 
     output.innerHTML = "";
     showBootScreen();
@@ -575,6 +593,7 @@ async function handleCommand(cmd) {
         case "clear":
             output.innerHTML = "";
             showBootScreen();
+            updateUrl(null);
             return;
         case "ls":
             ls();
@@ -705,4 +724,7 @@ input.addEventListener("keydown", function(e) {
     updatePrompt();
     await loadFilesystem();
     buildShortcuts();
+
+    const openPath = urlParams.get("open");
+    if (openPath) runCommands(`cat ${openPath}`);
 })();

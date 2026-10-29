@@ -98,7 +98,6 @@ body {
 
 }
 
-/* Message "passer l'intro" en bas de l'écran de démarrage */
 #skip-hint {
     position: fixed;
     bottom: 20px;
@@ -109,7 +108,6 @@ body {
     color: #484f58;
 }
 
-/* Contenu réservé à Google et aux lecteurs d'écran : présent dans la page mais invisible */
 .sr-only {
     position: absolute;
     width: 1px;
