@@ -4,18 +4,26 @@ body {
     background-color: #000000;
     color: #919191;
     font-family: monospace;
+
+    /* 100dvh = hauteur réellement visible (sans la barre d'adresse / le clavier sur mobile) */
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
 }
 
-#terminal-container {
-    width: 100%;
-    height: 100vh;
+/*
+ * Mise en page en colonne : la sortie prend toute la place disponible,
+ * la barre de raccourcis et la ligne de saisie restent collées en bas.
+ */
+#terminal {
+    height: 100%;
+    box-sizing: border-box;
+    padding: 20px 0;
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    gap: 8px;
 }
 
 #output {
@@ -24,30 +32,23 @@ body {
 
     font-size: 14px;
     line-height: 1.6;
- 
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
 
-    height: calc(100vh - 160px);   /* place pour les raccourcis + la ligne de saisie */
+    flex: 1;
+    min-height: 0;          /* indispensable pour que le défilement marche dans une colonne flex */
 
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     white-space: pre-wrap;
-    align-items: center;
+    overflow-wrap: break-word;
     padding: 10px 15px;
-    margin-bottom: 20px;
-    
 }
 
 #input-line {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: none;
 
     width: 80%;
     max-width: 900px;
+    cursor: text;
 
     display: flex;
     align-items: center;
@@ -62,6 +63,8 @@ body {
 
 #input {
     flex: 1;
+    min-width: 0;       /* sinon le champ garde une largeur minimale et fait déborder l'écran sur mobile */
+    width: 100%;
 
     background: transparent;
     border: none;
@@ -194,39 +197,43 @@ body {
     cursor: pointer;
 }
 
+/* ---------- Téléphone et petite tablette ---------- */
+
 @media (max-width: 768px) {
 
+    #terminal {
+        padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+        gap: 6px;
+    }
+
+    /* Toute la largeur de l'écran, avec une petite marge */
+    #output,
+    #shortcuts,
+    #input-line {
+        align-self: stretch;
+        width: auto;
+        max-width: none;
+    }
+
     #output {
-        overflow-wrap: break-word;
+        font-size: 13px;
+        line-height: 1.55;
+        padding: 6px 12px;
         word-break: break-word;
+    }
 
-        width: 80%;
-        max-width: 900px;
-
-        font-size: 14px;
-        line-height: 1.6;
-    
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-
-        height: calc(100vh - 260px);
-
-        overflow-y: auto;
-        white-space: pre-wrap;
-        align-items: center;
-        padding: 10px 15px;
-        margin-bottom: 20px;
+    /* Le texte d'aide et la bannière sont plus compacts : pas de ligne vide entre chaque ligne */
+    .compact-mobile br {
+        display: none;
     }
 
     #input-line {
-        width: 95%;
-        padding: 10px;
+        margin: 0 8px;
+        padding: 12px;
     }
 
     #input {
-        font-size: 16px;
+        font-size: 16px;    /* 16px minimum : sinon iOS zoome sur le champ au toucher */
     }
 
     .title {
@@ -238,7 +245,16 @@ body {
     }
 
     .sub-title p {
-        margin-bottom: 0;
+        margin: 2px 0 0;
+    }
+
+    .white-color,
+    .orange-arrow {
+        font-size: 16px;
+    }
+
+    .available {
+        font-size: 16px;
     }
 
     .prompt {
@@ -276,10 +292,7 @@ body {
 /* ---------- Barre de raccourcis au-dessus de la ligne de saisie ---------- */
 
 #shortcuts {
-    position: fixed;
-    bottom: 68px;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: none;
 
     width: 80%;
     max-width: 900px;
@@ -338,10 +351,35 @@ body {
     border-color: #919191;
 }
 
+/* Sur téléphone : les boutons passent sur deux lignes au lieu d'être cachés hors de l'écran,
+   et ils sont plus grands pour le doigt */
 @media (max-width: 768px) {
     #shortcuts {
-        width: 95%;
-        padding: 0 10px;
+        padding: 0 8px;
+        flex-wrap: wrap;
+        overflow-x: visible;
+        gap: 6px;
+    }
+
+    #shortcuts button {
+        padding: 7px 11px;
+        font-size: 13px;
+    }
+}
+
+/* Téléphone en mode paysage (peu de hauteur) : une seule ligne de boutons, qu'on fait défiler */
+@media (max-height: 480px) and (orientation: landscape) {
+    #shortcuts {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    #shortcuts button {
+        padding: 4px 10px;
+    }
+
+    #input-line {
+        padding: 8px 12px;
     }
 }
 

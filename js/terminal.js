@@ -187,7 +187,8 @@ async function loadFilesystem() {
 /* ---------- Affichage ---------- */
 
 function showBootScreen() {
-    output.insertAdjacentHTML("beforeend", t("banner") + "<br><br>" + t("help") + "<br>");
+    output.insertAdjacentHTML("beforeend",
+        `<span class="compact-mobile">${t("banner")}<br><br>${t("help")}<br></span>`);
     output.scrollTop = output.scrollHeight;
 }
 
@@ -533,6 +534,12 @@ function neofetch() {
             .map(c => `<span style="color:${c}">███</span>`).join("")
     ];
 
+    // Petit écran : le logo au-dessus des infos (côte à côte, les lignes se cassent)
+    if (window.matchMedia("(max-width: 600px)").matches) {
+        print(`<span class="green-color">${art.join("\n")}</span>\n\n${info.join("\n")}\n`);
+        return;
+    }
+
     const width = art[0].length;
     const lines = info.map((text, i) =>
         `<span class="green-color">${(art[i] || "").padEnd(width)}</span>  ${text}`
@@ -651,7 +658,7 @@ async function handleCommand(cmd) {
             changeLang(arg);
             return;
         case "help":
-            print(t("help"));
+            print(`<span class="compact-mobile">${t("help")}</span>`);
             return;
     }
 
@@ -722,6 +729,9 @@ function buildShortcuts() {
         bar.appendChild(button);
     });
 }
+
+/* Toucher n'importe où sur la ligne de saisie ouvre le clavier (pratique sur mobile) */
+document.getElementById("input-line").addEventListener("click", () => input.focus());
 
 input.addEventListener("keydown", function(e) {
     // Une touche pendant l'effet de frappe affiche tout le texte d'un coup
