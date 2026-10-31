@@ -78,7 +78,23 @@ Initiating hiring protocol...
         langCurrent: "Current language: English. Use <span class='blue-color clickable' data-cmd='lang fr'>lang fr</span> for French.",
         langUnknown: "lang: unknown language. Available: <span class='blue-color'>en</span>, <span class='blue-color'>fr</span>",
         langSwitched: "🌐 Language set to English.",
-        langButton: { label: "FR", title: "Version française", cmd: "lang fr" }
+        langButton: { label: "FR", title: "Version française", cmd: "lang fr" },
+        secretsReadme: `<span class="green-color bold">🕵️ Well done, you found /secrets.</span>
+Real engineers never stop at the first ls.
+
+Your reward: a little game.
+Run <span class="blue-color clickable" data-cmd="/secrets/snake">./snake</span> to play.
+`,
+        binaryFile: name => `cat: ${name}: binary file — try <span class="blue-color clickable" data-cmd="/secrets/snake">./${name}</span>`,
+        snake: {
+            score: "Score", best: "Best", quit: "Quit",
+            start: "SNAKE", startHint: "press an arrow key to start",
+            paused: "PAUSED", gameOver: "GAME OVER", won: "YOU WIN!",
+            again: "Enter: play again · Esc: quit",
+            helpKeys: "Arrows / WASD / ZQSD to move · Space: pause · Esc: quit",
+            helpTouch: "Swipe on the board or use the buttons",
+            ended: "Snake closed."
+        }
     },
 
     fr: {
@@ -145,7 +161,23 @@ Lancement du protocole de recrutement...
         langCurrent: "Langue actuelle : français. Tapez <span class='blue-color clickable' data-cmd='lang en'>lang en</span> pour l'anglais.",
         langUnknown: "lang: langue inconnue. Disponibles : <span class='blue-color'>en</span>, <span class='blue-color'>fr</span>",
         langSwitched: "🌐 Langue : français.",
-        langButton: { label: "EN", title: "English version", cmd: "lang en" }
+        langButton: { label: "EN", title: "English version", cmd: "lang en" },
+        secretsReadme: `<span class="green-color bold">🕵️ Bravo, vous avez trouvé /secrets.</span>
+Un vrai ingénieur ne s'arrête jamais au premier ls.
+
+Votre récompense : un petit jeu.
+Tapez <span class="blue-color clickable" data-cmd="/secrets/snake">./snake</span> pour jouer.
+`,
+        binaryFile: name => `cat: ${name} : fichier binaire — essayez <span class="blue-color clickable" data-cmd="/secrets/snake">./${name}</span>`,
+        snake: {
+            score: "Score", best: "Record", quit: "Quitter",
+            start: "SNAKE", startHint: "appuyez sur une flèche pour commencer",
+            paused: "PAUSE", gameOver: "PERDU", won: "GAGNÉ !",
+            again: "Entrée : rejouer · Échap : quitter",
+            helpKeys: "Flèches / ZQSD / WASD pour bouger · Espace : pause · Échap : quitter",
+            helpTouch: "Glissez sur le plateau ou utilisez les boutons",
+            ended: "Snake fermé."
+        }
     }
 };
 
@@ -195,6 +227,23 @@ async function loadFilesystem() {
         print(t("manifestError"));
         print(t("manifestHint"));
     }
+    addSecrets();
+}
+
+// /secrets : absent de ls, tree et des raccourcis ; on y entre avec "cd secrets"
+function addSecrets() {
+    filesystem.children.secrets = {
+        type: "dir",
+        hidden: true,
+        children: {
+            "README.txt": { type: "text", content: () => t("secretsReadme") },
+            "snake": { type: "exec", program: "snake" }
+        }
+    };
+}
+
+function visibleEntries(children) {
+    return Object.entries(children).filter(([, item]) => !item.hidden);
 }
 
 
@@ -334,9 +383,11 @@ function ls() {
     const node = getNode();
     let result = "";
 
-    Object.entries(node).forEach(([name, item]) => {
+    visibleEntries(node).forEach(([name, item]) => {
         if (item.type === "dir") {
             result += `<span class="dir clickable" data-cmd="cd ${absolutePath(name)}">📁 ${name}/</span><br>`;
+        } else if (item.type === "exec") {
+            result += `<span class="green-color bold clickable" data-cmd="${absolutePath(name)}">⚙️ ${name}*</span><br>`;
         } else {
             result += `<span class="file clickable" data-cmd="cat ${absolutePath(name)}">📄 ${name}</span><br>`;
         }
@@ -383,6 +434,16 @@ async function openFile(name) {
         return;
     }
 
+    if (node.type === "exec") {
+        print(t("binaryFile")(escapeHtml(fullPath[fullPath.length - 1])));
+        return;
+    }
+
+    if (node.type === "text") {
+        await printTyped(node.content());
+        return;
+    }
+
     if (node.path.toLowerCase().endsWith(".pdf")) {
         window.open(node.path, "_blank");
         return;
@@ -418,10 +479,12 @@ function getMatches(value) {
 
     let options = [];
 
-    if (parts.length === 1) {
+    if (parts.length === 1 && value.startsWith("./")) {
+        options = Object.keys(getNode()).filter(name => getNode()[name].type === "exec").map(name => "./" + name);
+    } else if (parts.length === 1) {
         options = COMMANDS;
     } else if (command === "cd") {
-        options = Object.keys(getNode()).filter(name => getNode()[name].type === "dir");
+        options = visibleEntries(getNode()).filter(([, item]) => item.type === "dir").map(([name]) => name);
     } else if (command === "cat") {
         options = Object.keys(getNode());
     } else if (command === "lang" || command === "cv") {
@@ -476,7 +539,7 @@ function tree() {
     const lines = ["<span class='dir'>~</span>"];
 
     (function walk(node, prefix, path) {
-        const entries = Object.entries(node.children);
+        const entries = visibleEntries(node.children);
         entries.forEach(([name, item], i) => {
             const last = i === entries.length - 1;
             const branch = prefix + (last ? "└── " : "├── ");
@@ -586,6 +649,23 @@ function browseHistory(direction) {
 }
 
 
+async function runProgram(program) {
+    if (program !== "snake" || typeof SnakeGame === "undefined") return;
+
+    input.disabled = true;
+    document.getElementById("shortcuts").classList.add("disabled");
+    if (finishTyping) finishTyping();
+
+    try {
+        await SnakeGame.start(output, t("snake"));
+    } finally {
+        input.disabled = false;
+        document.getElementById("shortcuts").classList.remove("disabled");
+        print("");
+        if (window.matchMedia("(pointer: fine)").matches) input.focus();
+    }
+}
+
 async function handleCommand(cmd) {
     if (!cmd) return;
 
@@ -594,6 +674,19 @@ async function handleCommand(cmd) {
 
     const [command, ...args] = cmd.split(/\s+/);
     const arg = args.join(" ");
+
+    // "./snake", "/secrets/snake"…
+    if (command.includes("/")) {
+        const node = nodeAt(resolvePath(command.replace(/^\.\//, "")));
+        if (node && node.type === "exec") {
+            await runProgram(node.program);
+            return;
+        }
+        if (node && node.type === "dir") {
+            print(`bash: ${escapeHtml(command)}: Is a directory`);
+            return;
+        }
+    }
 
     switch (command) {
         case "clear":
@@ -703,7 +796,7 @@ function buildShortcuts() {
     if (!bar) return;
 
     const shortcuts = Object.keys(filesystem.children)
-        .filter(name => filesystem.children[name].type === "dir")
+        .filter(name => filesystem.children[name].type === "dir" && !filesystem.children[name].hidden)
         .map(name => ({ label: `${name}/`, cmds: [`cd /${name}`, "ls"] }));
 
     const cvs = findCvs();

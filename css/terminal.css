@@ -387,3 +387,74 @@ body {
 #shortcuts button.lang:focus-visible {
     border-color: #f88d00;
 }
+
+/* Snake (/secrets) */
+.snake {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 6px 0;
+    white-space: normal;
+}
+
+.snake-hud {
+    display: flex;
+    gap: 24px;
+    color: #3FB950;
+    font-weight: bold;
+}
+
+.snake-best {
+    color: #ffe600;
+}
+
+.snake-canvas {
+    touch-action: none;
+    cursor: pointer;
+}
+
+.snake-help {
+    color: #6e7681;
+    font-size: 12px;
+    text-align: center;
+}
+
+.snake-ended .snake-canvas {
+    opacity: 0.4;
+}
+
+.snake-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 52px);
+    gap: 6px;
+    justify-content: center;
+}
+
+.snake-pad button {
+    height: 44px;
+    background: transparent;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    color: #3FB950;
+    font-size: 16px;
+    font-family: monospace;
+}
+
+.snake-pad button[data-dir="up"]    { grid-area: 1 / 2; }
+.snake-pad button[data-dir="left"]  { grid-area: 2 / 1; }
+.snake-pad button[data-dir="pause"] { grid-area: 2 / 2; }
+.snake-pad button[data-dir="right"] { grid-area: 2 / 3; }
+.snake-pad button[data-dir="down"]  { grid-area: 3 / 2; }
+
+.snake-pad .snake-quit {
+    grid-area: 4 / 1 / 5 / 4;
+    height: 34px;
+    color: #919191;
+    font-size: 13px;
+}
+
+#shortcuts.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
