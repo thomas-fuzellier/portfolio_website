@@ -30,7 +30,8 @@ const I18N = {
 <span class="blue-color">cat [file]</span> → cat file (txt or pdf)<br>
 <span class="blue-color">pwd</span> → show current directory<br>
 <span class="blue-color">tree</span> → show the whole filesystem<br>
-<span class="blue-color">whoami</span> · <span class="blue-color">contact</span> · <span class="blue-color">cv</span> · <span class="blue-color">neofetch</span><br>
+<span class="blue-color">cv en</span> / <span class="blue-color">cv fr</span> → open my CV (English / French)<br>
+<span class="blue-color">whoami</span> · <span class="blue-color">contact</span> · <span class="blue-color">neofetch</span><br>
 <span class="blue-color">lang fr</span> → <span class="clickable blue-color" data-cmd="lang fr">version française</span><br>
 <span class="blue-color">clear</span> → clear terminal<br>
 <span class="blue-color">↑ / ↓</span> → command history · <span class="blue-color">TAB</span> → autocomplete<br>
@@ -61,7 +62,7 @@ Initiating hiring protocol...
 <span class="white-color bold">Great choice! Let's talk 👇</span>
 📧 <a href="mailto:thomas.fuzellier@outlook.fr" class="link">thomas.fuzellier@outlook.fr</a>
 💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier</a>
-📄 <span class="yellow-color clickable" data-cmd="cv">open my CV</span>
+📄 CV: <span class="yellow-color clickable" data-cmd="cv en">English</span> · <span class="yellow-color clickable" data-cmd="cv fr">French</span>
 `,
         manifestError: "<span class='orange-color'>Could not load the filesystem (assets/manifest.json).</span>",
         manifestHint: "Run <span class='blue-color'>node scripts/build-manifest.js</span> then reload the page.",
@@ -71,6 +72,8 @@ Initiating hiring protocol...
         isDirectory: name => `cat: ${name}: Is a directory`,
         loadError: "Error loading file",
         cvNotFound: "cv: CV not found in /about",
+        cvUsage: "Usage: <span class='blue-color clickable' data-cmd='cv en'>cv en</span> (English) or <span class='blue-color clickable' data-cmd='cv fr'>cv fr</span> (French)",
+        cvOther: other => `💡 Also available: <span class='yellow-color clickable' data-cmd='cv ${other}'>${other === "fr" ? "French CV" : "English CV"}</span>`,
         notFound: "Command not found : <span class='blue-color'>help</span> for all commands",
         langCurrent: "Current language: English. Use <span class='blue-color clickable' data-cmd='lang fr'>lang fr</span> for French.",
         langUnknown: "lang: unknown language. Available: <span class='blue-color'>en</span>, <span class='blue-color'>fr</span>",
@@ -94,7 +97,8 @@ Initiating hiring protocol...
 <span class="blue-color">cat [fichier]</span> → afficher un fichier (txt ou pdf)<br>
 <span class="blue-color">pwd</span> → afficher le dossier courant<br>
 <span class="blue-color">tree</span> → afficher toute l'arborescence<br>
-<span class="blue-color">whoami</span> · <span class="blue-color">contact</span> · <span class="blue-color">cv</span> · <span class="blue-color">neofetch</span><br>
+<span class="blue-color">cv fr</span> / <span class="blue-color">cv en</span> → ouvrir mon CV (français / anglais)<br>
+<span class="blue-color">whoami</span> · <span class="blue-color">contact</span> · <span class="blue-color">neofetch</span><br>
 <span class="blue-color">lang en</span> → <span class="clickable blue-color" data-cmd="lang en">English version</span><br>
 <span class="blue-color">clear</span> → effacer le terminal<br>
 <span class="blue-color">↑ / ↓</span> → historique des commandes · <span class="blue-color">TAB</span> → autocomplétion<br>
@@ -125,7 +129,7 @@ Lancement du protocole de recrutement...
 <span class="white-color bold">Excellent choix ! Parlons-en 👇</span>
 📧 <a href="mailto:thomas.fuzellier@outlook.fr" class="link">thomas.fuzellier@outlook.fr</a>
 💼 <a href="https://www.linkedin.com/in/thomas-fuzellier/" target="_blank" class="link">linkedin.com/in/thomas-fuzellier</a>
-📄 <span class="yellow-color clickable" data-cmd="cv">ouvrir mon CV</span>
+📄 CV : <span class="yellow-color clickable" data-cmd="cv fr">français</span> · <span class="yellow-color clickable" data-cmd="cv en">anglais</span>
 `,
         manifestError: "<span class='orange-color'>Impossible de charger le système de fichiers (assets/manifest.json).</span>",
         manifestHint: "Lancez <span class='blue-color'>node scripts/build-manifest.js</span> puis rechargez la page.",
@@ -135,6 +139,8 @@ Lancement du protocole de recrutement...
         isDirectory: name => `cat: ${name}: est un dossier`,
         loadError: "Erreur lors du chargement du fichier",
         cvNotFound: "cv: CV introuvable dans /about",
+        cvUsage: "Utilisation : <span class='blue-color clickable' data-cmd='cv fr'>cv fr</span> (français) ou <span class='blue-color clickable' data-cmd='cv en'>cv en</span> (anglais)",
+        cvOther: other => `💡 Aussi disponible : <span class='yellow-color clickable' data-cmd='cv ${other}'>${other === "fr" ? "CV en français" : "CV en anglais"}</span>`,
         notFound: "Commande inconnue : <span class='blue-color'>help</span> pour la liste des commandes",
         langCurrent: "Langue actuelle : français. Tapez <span class='blue-color clickable' data-cmd='lang en'>lang en</span> pour l'anglais.",
         langUnknown: "lang: langue inconnue. Disponibles : <span class='blue-color'>en</span>, <span class='blue-color'>fr</span>",
@@ -418,7 +424,7 @@ function getMatches(value) {
         options = Object.keys(getNode()).filter(name => getNode()[name].type === "dir");
     } else if (command === "cat") {
         options = Object.keys(getNode());
-    } else if (command === "lang") {
+    } else if (command === "lang" || command === "cv") {
         options = LANGS;
     }
 
@@ -617,9 +623,25 @@ async function handleCommand(cmd) {
             await openFile("/about/contact.txt");
             return;
         case "cv": {
-            const cv = findCv();
-            if (cv) await openFile(cv);
-            else print(t("cvNotFound"));
+            const cvs = findCvs();
+            const wanted = arg.toLowerCase();
+
+            if (wanted && !LANGS.includes(wanted)) {
+                print(t("cvUsage"));
+                return;
+            }
+
+            const cv = wanted ? cvs[wanted] : findCv();
+            if (!cv) {
+                print(t("cvNotFound"));
+                return;
+            }
+
+            await openFile(cv);
+
+            // Sans argument : on rappelle que l'autre version existe
+            const other = (wanted || (cv === cvs.en ? "en" : "fr")) === "en" ? "fr" : "en";
+            if (!wanted && cvs[other]) print(t("cvOther")(other) + "\n");
             return;
         }
         case "neofetch":
@@ -658,11 +680,22 @@ output.addEventListener("click", function(e) {
     if (target) runCommands(target.dataset.cmd);
 });
 
-function findCv() {
+// CV français : CV_xxx.pdf ; CV anglais : CV_xxx_en.pdf
+function findCvs() {
     const about = filesystem.children.about;
-    if (!about || about.type !== "dir") return null;
-    const name = Object.keys(about.children).find(n => /^cv.*\.pdf$/i.test(n));
-    return name ? `/about/${name}` : null;
+    if (!about || about.type !== "dir") return {};
+    const pdfs = Object.keys(about.children).filter(n => /^cv.*\.pdf$/i.test(n));
+    const en = pdfs.find(n => /_en\.pdf$/i.test(n));
+    const fr = pdfs.find(n => !/_en\.pdf$/i.test(n));
+    return {
+        fr: fr ? `/about/${fr}` : null,
+        en: en ? `/about/${en}` : null
+    };
+}
+
+function findCv(wanted) {
+    const cvs = findCvs();
+    return cvs[wanted] || cvs[lang] || cvs.fr || cvs.en || null;
 }
 
 function buildShortcuts() {
@@ -673,8 +706,9 @@ function buildShortcuts() {
         .filter(name => filesystem.children[name].type === "dir")
         .map(name => ({ label: `${name}/`, cmds: [`cd /${name}`, "ls"] }));
 
-    const cv = findCv();
-    if (cv) shortcuts.push({ label: "CV.pdf", cmds: [`cat ${cv}`], className: "cv" });
+    const cvs = findCvs();
+    if (cvs.fr) shortcuts.push({ label: "CV (FR)", cmds: ["cv fr"], className: "cv" });
+    if (cvs.en) shortcuts.push({ label: "CV (EN)", cmds: ["cv en"], className: "cv" });
 
     shortcuts.push({ label: "clear", cmds: ["clear"], className: "muted" });
 

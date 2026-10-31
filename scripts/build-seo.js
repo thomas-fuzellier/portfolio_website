@@ -18,12 +18,11 @@ function decodeEntities(text) {
         .replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 }
 
-// Texte brut d'un fichier .txt du terminal (sans balises, liens ni animations)
 function readPlainLines(file) {
     const raw = fs.readFileSync(file, "utf8")
         .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
         .replace(/<a\b[\s\S]*?<\/a>/gi, "")
-        .replace(/<\/span>[ \t]+(?=\S)/g, "</span> · ")     // "Entreprise · Lieu · Dates"
+        .replace(/<\/span>[ \t]+(?=\S)/g, "</span> · ")     
         .replace(/<[^>]+>/g, "");
 
     return decodeEntities(raw)
@@ -32,7 +31,6 @@ function readPlainLines(file) {
         .filter(Boolean);
 }
 
-// Fichiers .txt anglais d'un dossier (les traductions .fr.txt sont ignorées)
 function englishTxtFiles(folder) {
     const dir = path.join(ASSETS_DIR, folder);
     if (!fs.existsSync(dir)) return [];
@@ -41,14 +39,12 @@ function englishTxtFiles(folder) {
         .map(name => path.join(dir, name));
 }
 
-// Années de la ligne de dates ; "Present" compte comme l'année la plus récente
 function yearsOf(text) {
     const years = (text.match(/\b(19|20)\d{2}\b/g) || []).map(Number);
     if (/present|aujourd/i.test(text)) years.push(9999);
     return years.length ? years : [0];
 }
 
-// Titre, ligne de contexte (entreprise, lieu, dates), description et points clés
 function parseEntry(file) {
     const lines = readPlainLines(file);
     const [title = "", meta = "", ...rest] = lines;
@@ -78,7 +74,6 @@ function entriesHtml(folder, heading) {
     return `        <h2>${heading}</h2>\n        <ul>\n${items.join("\n")}\n        </ul>`;
 }
 
-// Compétences : "drwxr-xr-x Catégorie/" puis "-rw-r--r-- Compétence"
 function skillsHtml() {
     const file = path.join(ASSETS_DIR, "skills", "hard_skills.txt");
     if (!fs.existsSync(file)) return "";
@@ -115,11 +110,10 @@ function updateHtml(page, block) {
     fs.writeFileSync(file, html.replace(/\n/g, nl));
 }
 
-function findCv() {
+function findCvs() {
     const about = path.join(ASSETS_DIR, "about");
-    if (!fs.existsSync(about)) return null;
-    const name = fs.readdirSync(about).find(n => /^cv.*\.pdf$/i.test(n));
-    return name ? `assets/about/${name}` : null;
+    if (!fs.existsSync(about)) return [];
+    return fs.readdirSync(about).filter(n => /^cv.*\.pdf$/i.test(n)).sort().map(n => `assets/about/${n}`);
 }
 
 function writeSitemap() {
@@ -128,8 +122,7 @@ function writeSitemap() {
         { loc: `${SITE}/`, priority: "1.0" },
         { loc: `${SITE}/terminal.html`, priority: "0.9" }
     ];
-    const cv = findCv();
-    if (cv) urls.push({ loc: `${SITE}/${cv}`, priority: "0.7" });
+    findCvs().forEach(cv => urls.push({ loc: `${SITE}/${cv}`, priority: "0.7" }));
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
